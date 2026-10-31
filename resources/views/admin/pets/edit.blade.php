@@ -1,9 +1,13 @@
 
 @extends('layouts.admin')
 
+@section('title', 'Edit Hewan - PetCare')
+
 @section('content')
+
 <div class="container-fluid py-4">
 
+    {{-- Header Halaman --}}
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h2 class="fw-bold mb-1">Edit Hewan</h2>
@@ -19,6 +23,7 @@
         </a>
     </div>
 
+    {{-- Form Edit Hewan --}}
     <div class="card border-0 shadow-sm">
         <div class="card-body p-4">
 
@@ -50,6 +55,7 @@
                                     {{ $customer->nama }}
                                 </option>
                             @endforeach
+
                         </select>
 
                         @error('id_customer')
@@ -76,39 +82,26 @@
                         @enderror
                     </div>
 
-                    {{-- Jenis Hewan --}}
-                    <div class="col-md-6">
-                        <label for="jenis" class="form-label fw-semibold">
-                            Jenis Hewan <span class="text-danger">*</span>
-                        </label>
+                 
+{{-- Jenis Hewan --}}
+<div class="col-md-6">
+    <label for="jenis" class="form-label fw-semibold">
+        Jenis Hewan <span class="text-danger">*</span>
+    </label>
 
-                        <select name="jenis"
-                                id="jenis"
-                                class="form-select @error('jenis') is-invalid @enderror"
-                                required>
+    <input type="text"
+           name="jenis"
+           id="jenis"
+           class="form-control @error('jenis') is-invalid @enderror"
+           value="{{ old('jenis', $pet->jenis) }}"
+           placeholder="Contoh: Kucing"
+           required>
 
-                            <option value="">-- Pilih Jenis --</option>
+    @error('jenis')
+        <div class="invalid-feedback">{{ $message }}</div>
+    @enderror
+</div>
 
-                            <option value="Kucing"
-                                {{ old('jenis', $pet->jenis) == 'Kucing' ? 'selected' : '' }}>
-                                Kucing
-                            </option>
-
-                            <option value="Anjing"
-                                {{ old('jenis', $pet->jenis) == 'Anjing' ? 'selected' : '' }}>
-                                Anjing
-                            </option>
-
-                            <option value="Lainnya"
-                                {{ old('jenis', $pet->jenis) == 'Lainnya' ? 'selected' : '' }}>
-                                Lainnya
-                            </option>
-                        </select>
-
-                        @error('jenis')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
 
                     {{-- Ras --}}
                     <div class="col-md-6">
@@ -151,6 +144,7 @@
                                 {{ old('jenis_kelamin', $pet->jenis_kelamin) == 'Betina' ? 'selected' : '' }}>
                                 Betina
                             </option>
+
                         </select>
 
                         @error('jenis_kelamin')
@@ -169,7 +163,8 @@
                                id="umur_tahun"
                                class="form-control @error('umur_tahun') is-invalid @enderror"
                                value="{{ old('umur_tahun', $pet->umur_tahun) }}"
-                               min="0">
+                               min="0"
+                               placeholder="0">
 
                         @error('umur_tahun')
                             <div class="invalid-feedback">{{ $message }}</div>
@@ -188,7 +183,8 @@
                                class="form-control @error('umur_bulan') is-invalid @enderror"
                                value="{{ old('umur_bulan', $pet->umur_bulan) }}"
                                min="0"
-                               max="11">
+                               max="11"
+                               placeholder="0">
 
                         @error('umur_bulan')
                             <div class="invalid-feedback">{{ $message }}</div>
@@ -201,14 +197,18 @@
                             Foto Hewan
                         </label>
 
+                        {{-- Foto Saat Ini --}}
                         @if ($pet->foto && \Illuminate\Support\Facades\Storage::disk('public')->exists($pet->foto))
                             <div class="mb-3">
-                                <p class="text-muted small mb-2">Foto saat ini:</p>
+                                <p class="text-muted small mb-2">
+                                    Foto saat ini:
+                                </p>
 
                                 <img src="{{ asset('storage/' . $pet->foto) }}"
                                      alt="Foto {{ $pet->nama_pet }}"
-                                     class="img-thumbnail"
-                                     style="width: 150px; height: 150px; object-fit: cover;">
+                                     width="150"
+                                     height="150"
+                                     class="img-thumbnail object-fit-cover">
                             </div>
 
                             <div class="form-check mb-3">
@@ -225,10 +225,13 @@
                         @else
                             <div class="mb-3 text-muted">
                                 <i class="bi bi-camera fs-1"></i>
-                                <p class="small mb-0">Belum ada foto hewan.</p>
+                                <p class="small mb-0">
+                                    Belum ada foto hewan.
+                                </p>
                             </div>
                         @endif
 
+                        {{-- Upload Foto Baru --}}
                         <input type="file"
                                name="foto"
                                id="foto"
@@ -244,19 +247,24 @@
                             Format JPG, JPEG, PNG, atau WEBP. Maksimal 2 MB.
                         </small>
 
-                        <div id="preview-container" class="mt-3" style="display: none;">
-                            <p class="text-muted small mb-2">Pratinjau foto baru:</p>
+                        {{-- Preview Foto Baru --}}
+                        <div id="preview-container" class="mt-3 d-none">
+                            <p class="text-muted small mb-2">
+                                Pratinjau foto baru:
+                            </p>
 
                             <img id="preview-foto"
                                  src=""
                                  alt="Pratinjau foto baru"
-                                 class="img-thumbnail"
-                                 style="width: 150px; height: 150px; object-fit: cover;">
+                                 width="150"
+                                 height="150"
+                                 class="img-thumbnail object-fit-cover">
 
                             <div>
                                 <button type="button"
                                         id="batal-foto"
                                         class="btn btn-sm btn-outline-danger mt-2">
+                                    <i class="bi bi-x-circle me-1"></i>
                                     Batal Pilih Foto
                                 </button>
                             </div>
@@ -284,6 +292,7 @@
 
                 {{-- Tombol --}}
                 <div class="d-flex justify-content-end gap-2 mt-4">
+
                     <a href="{{ route('admin.pets.index') }}"
                        class="btn btn-light border">
                         Batal
@@ -293,23 +302,29 @@
                         <i class="bi bi-save me-1"></i>
                         Simpan Perubahan
                     </button>
+
                 </div>
 
             </form>
         </div>
     </div>
+
 </div>
 
+{{-- Preview Foto --}}
 <script>
 document.addEventListener('DOMContentLoaded', function () {
+
     const inputFoto = document.getElementById('foto');
     const previewContainer = document.getElementById('preview-container');
     const previewFoto = document.getElementById('preview-foto');
     const tombolBatal = document.getElementById('batal-foto');
+    const hapusFoto = document.getElementById('hapus_foto');
 
     let previewUrl = null;
 
     inputFoto.addEventListener('change', function () {
+
         const file = this.files[0];
 
         if (previewUrl) {
@@ -318,7 +333,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         if (!file) {
-            previewContainer.style.display = 'none';
+            previewContainer.classList.add('d-none');
             previewFoto.removeAttribute('src');
             return;
         }
@@ -331,43 +346,52 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (!formatDiizinkan.includes(file.type)) {
             alert('Format foto harus JPG, JPEG, PNG, atau WEBP.');
+
             this.value = '';
-            previewContainer.style.display = 'none';
+            previewContainer.classList.add('d-none');
             previewFoto.removeAttribute('src');
+
             return;
         }
 
         if (file.size > 2 * 1024 * 1024) {
             alert('Ukuran foto maksimal 2 MB.');
+
             this.value = '';
-            previewContainer.style.display = 'none';
+            previewContainer.classList.add('d-none');
             previewFoto.removeAttribute('src');
+
             return;
         }
 
         previewUrl = URL.createObjectURL(file);
         previewFoto.src = previewUrl;
-        previewContainer.style.display = 'block';
 
-        const hapusFoto = document.getElementById('hapus_foto');
+        previewContainer.classList.remove('d-none');
 
+        // Jika memilih foto baru, batalkan pilihan hapus foto lama.
         if (hapusFoto) {
             hapusFoto.checked = false;
         }
+
     });
 
     if (tombolBatal) {
         tombolBatal.addEventListener('click', function () {
+
             inputFoto.value = '';
             previewFoto.removeAttribute('src');
-            previewContainer.style.display = 'none';
+            previewContainer.classList.add('d-none');
 
             if (previewUrl) {
                 URL.revokeObjectURL(previewUrl);
                 previewUrl = null;
             }
+
         });
     }
+
 });
 </script>
+
 @endsection

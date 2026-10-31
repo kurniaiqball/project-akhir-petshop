@@ -1,3 +1,4 @@
+
 @extends('layouts.admin')
 
 @section('title', 'Edit Produk - PetCare')
@@ -8,18 +9,23 @@
     Perbarui informasi produk.
 @endsection
 
-
 @section('content')
 
-<div class="card border-0 shadow-sm">
+<div class="card shadow-sm border-0">
 
     <div class="card-body">
 
+        {{-- ALERT ERROR --}}
         @if ($errors->any())
 
-            <div class="alert alert-danger">
+            <div class="alert alert-danger" role="alert">
 
-                <ul class="mb-0">
+                <strong>
+                    <i class="bi bi-exclamation-circle me-1"></i>
+                    Ada kesalahan:
+                </strong>
+
+                <ul class="mb-0 mt-2">
 
                     @foreach ($errors->all() as $error)
 
@@ -34,6 +40,7 @@
         @endif
 
 
+        {{-- FORM EDIT PRODUK --}}
         <form
             action="{{ route('admin.products.update', $product) }}"
             method="POST"
@@ -41,17 +48,18 @@
         >
 
             @csrf
-
             @method('PUT')
 
 
             <div class="row">
 
+                {{-- KOLOM KIRI --}}
                 <div class="col-md-8">
 
+                    {{-- NAMA PRODUK --}}
                     <div class="mb-3">
 
-                        <label class="form-label">
+                        <label class="form-label fw-semibold">
                             Nama Produk
                         </label>
 
@@ -66,9 +74,10 @@
                     </div>
 
 
+                    {{-- KATEGORI --}}
                     <div class="mb-3">
 
-                        <label class="form-label">
+                        <label class="form-label fw-semibold">
                             Kategori
                         </label>
 
@@ -83,10 +92,7 @@
                                 <option
                                     value="{{ $category->id_category }}"
                                     @selected(
-                                        old(
-                                            'id_category',
-                                            $product->id_category
-                                        ) == $category->id_category
+                                        old('id_category', $product->id_category) == $category->id_category
                                     )
                                 >
                                     {{ $category->nama_category }}
@@ -99,13 +105,15 @@
                     </div>
 
 
+                    {{-- HARGA DAN STOK --}}
                     <div class="row">
 
+                        {{-- HARGA --}}
                         <div class="col-md-6">
 
                             <div class="mb-3">
 
-                                <label class="form-label">
+                                <label class="form-label fw-semibold">
                                     Harga
                                 </label>
 
@@ -123,11 +131,12 @@
                         </div>
 
 
+                        {{-- STOK --}}
                         <div class="col-md-6">
 
                             <div class="mb-3">
 
-                                <label class="form-label">
+                                <label class="form-label fw-semibold">
                                     Stok
                                 </label>
 
@@ -147,9 +156,10 @@
                     </div>
 
 
+                    {{-- DESKRIPSI --}}
                     <div class="mb-3">
 
-                        <label class="form-label">
+                        <label class="form-label fw-semibold">
                             Deskripsi
                         </label>
 
@@ -164,22 +174,26 @@
                 </div>
 
 
+                {{-- KOLOM KANAN --}}
                 <div class="col-md-4">
 
+                    {{-- GAMBAR PRODUK --}}
                     <div class="mb-3">
 
-                        <label class="form-label">
+                        <label class="form-label fw-semibold">
                             Gambar Produk
                         </label>
 
+
+                        {{-- PREVIEW GAMBAR --}}
                         @if ($product->gambar)
 
                             <div class="mb-3">
 
                                 <img
                                     src="{{ asset('storage/' . $product->gambar) }}"
+                                    alt="{{ $product->nama_product }}"
                                     class="img-fluid rounded"
-                                    style="max-height: 200px;"
                                 >
 
                             </div>
@@ -187,6 +201,7 @@
                         @endif
 
 
+                        {{-- INPUT GAMBAR --}}
                         <input
                             type="file"
                             name="gambar"
@@ -194,9 +209,9 @@
                             accept=".jpg,.jpeg,.png,.webp"
                         >
 
-                        <small class="text-muted">
+                        <div class="form-text">
                             Kosongkan jika tidak ingin mengganti gambar.
-                        </small>
+                        </div>
 
                     </div>
 
@@ -208,18 +223,20 @@
             <hr>
 
 
+            {{-- TOMBOL AKSI --}}
             <div class="d-flex gap-2">
 
                 <a
                     href="{{ route('admin.products.index') }}"
-                    class="btn btn-secondary"
+                    class="btn btn-outline-secondary"
                 >
+                    <i class="bi bi-arrow-left me-1"></i>
                     Kembali
                 </a>
 
                 <button
                     type="submit"
-                    class="btn btn-warning"
+                    class="btn btn-primary"
                 >
                     <i class="bi bi-save me-1"></i>
                     Update Produk

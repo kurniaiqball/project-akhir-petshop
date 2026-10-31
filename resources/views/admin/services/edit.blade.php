@@ -1,4 +1,7 @@
+
 @extends('layouts.admin')
+
+@section('title', 'Edit Layanan - PetCare')
 
 @section('content')
 
@@ -66,7 +69,7 @@
 
                     <div class="input-group">
 
-                        <span class="input-group-text">
+                        <span class="input-group-text bg-light">
                             Rp
                         </span>
 
@@ -106,7 +109,7 @@
                             required
                         >
 
-                        <span class="input-group-text">
+                        <span class="input-group-text bg-light">
                             menit
                         </span>
 
@@ -153,7 +156,7 @@
 
                 <button
                     type="submit"
-                    class="btn btn-success"
+                    class="btn btn-primary"
                 >
                     <i class="bi bi-save me-1"></i>
                     Simpan Perubahan

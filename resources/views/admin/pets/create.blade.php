@@ -1,9 +1,13 @@
 
 @extends('layouts.admin')
 
+@section('title', 'Tambah Hewan - PetCare')
+
 @section('content')
+
 <div class="container-fluid py-4">
 
+    {{-- Header Halaman --}}
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h2 class="fw-bold mb-1">Tambah Hewan</h2>
@@ -19,6 +23,7 @@
         </a>
     </div>
 
+    {{-- Form Tambah Hewan --}}
     <div class="card border-0 shadow-sm">
         <div class="card-body p-4">
 
@@ -49,6 +54,7 @@
                                     {{ $customer->nama }}
                                 </option>
                             @endforeach
+
                         </select>
 
                         @error('id_customer')
@@ -76,34 +82,19 @@
                         @enderror
                     </div>
 
-                    {{-- Jenis Hewan --}}
+                    {{-- Jenis --}}
                     <div class="col-md-6">
                         <label for="jenis" class="form-label fw-semibold">
                             Jenis Hewan <span class="text-danger">*</span>
                         </label>
 
-                        <select name="jenis"
-                                id="jenis"
-                                class="form-select @error('jenis') is-invalid @enderror"
-                                required>
-
-                            <option value="">-- Pilih Jenis --</option>
-
-                            <option value="Kucing"
-                                {{ old('jenis') == 'Kucing' ? 'selected' : '' }}>
-                                Kucing
-                            </option>
-
-                            <option value="Anjing"
-                                {{ old('jenis') == 'Anjing' ? 'selected' : '' }}>
-                                Anjing
-                            </option>
-
-                            <option value="Lainnya"
-                                {{ old('jenis') == 'Lainnya' ? 'selected' : '' }}>
-                                Lainnya
-                            </option>
-                        </select>
+                        <input type="text"
+                               name="jenis"
+                               id="jenis"
+                               class="form-control @error('jenis') is-invalid @enderror"
+                               value="{{ old('jenis') }}"
+                               placeholder="Contoh: Kucing"
+                               required>
 
                         @error('jenis')
                             <div class="invalid-feedback">{{ $message }}</div>
@@ -151,6 +142,7 @@
                                 {{ old('jenis_kelamin') == 'Betina' ? 'selected' : '' }}>
                                 Betina
                             </option>
+
                         </select>
 
                         @error('jenis_kelamin')
@@ -217,12 +209,15 @@
                             Format JPG, JPEG, PNG, atau WEBP. Maksimal 2 MB.
                         </small>
 
-                        <div class="mt-3" id="preview-container" style="display: none;">
+                        {{-- Preview Foto --}}
+                        <div class="mt-3 d-none" id="preview-container">
+
                             <img id="preview-foto"
                                  src=""
                                  alt="Pratinjau foto hewan"
-                                 class="img-thumbnail"
-                                 style="width: 150px; height: 150px; object-fit: cover;">
+                                 width="150"
+                                 height="150"
+                                 class="img-thumbnail object-fit-cover">
 
                             <div>
                                 <button type="button"
@@ -232,6 +227,7 @@
                                     Batal Pilih Foto
                                 </button>
                             </div>
+
                         </div>
                     </div>
 
@@ -256,6 +252,7 @@
 
                 {{-- Tombol --}}
                 <div class="d-flex justify-content-end gap-2 mt-4">
+
                     <a href="{{ route('admin.pets.index') }}"
                        class="btn btn-light border">
                         Batal
@@ -265,26 +262,32 @@
                         <i class="bi bi-save me-1"></i>
                         Simpan Hewan
                     </button>
+
                 </div>
 
             </form>
         </div>
     </div>
+
 </div>
 
 {{-- Preview Foto --}}
 <script>
 document.addEventListener('DOMContentLoaded', function () {
+
     const inputFoto = document.getElementById('foto');
     const previewContainer = document.getElementById('preview-container');
     const previewFoto = document.getElementById('preview-foto');
     const tombolHapus = document.getElementById('hapus-preview');
 
+    let previewUrl = null;
+
     inputFoto.addEventListener('change', function () {
+
         const file = this.files[0];
 
         if (!file) {
-            previewContainer.style.display = 'none';
+            previewContainer.classList.add('d-none');
             previewFoto.removeAttribute('src');
             return;
         }
@@ -298,7 +301,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!formatDiizinkan.includes(file.type)) {
             alert('Format foto harus JPG, JPEG, PNG, atau WEBP.');
             this.value = '';
-            previewContainer.style.display = 'none';
+            previewContainer.classList.add('d-none');
             previewFoto.removeAttribute('src');
             return;
         }
@@ -306,20 +309,35 @@ document.addEventListener('DOMContentLoaded', function () {
         if (file.size > 2 * 1024 * 1024) {
             alert('Ukuran foto maksimal 2 MB.');
             this.value = '';
-            previewContainer.style.display = 'none';
+            previewContainer.classList.add('d-none');
             previewFoto.removeAttribute('src');
             return;
         }
 
-        previewFoto.src = URL.createObjectURL(file);
-        previewContainer.style.display = 'block';
+        if (previewUrl) {
+            URL.revokeObjectURL(previewUrl);
+        }
+
+        previewUrl = URL.createObjectURL(file);
+        previewFoto.src = previewUrl;
+        previewContainer.classList.remove('d-none');
+
     });
 
     tombolHapus.addEventListener('click', function () {
+
         inputFoto.value = '';
         previewFoto.removeAttribute('src');
-        previewContainer.style.display = 'none';
+        previewContainer.classList.add('d-none');
+
+        if (previewUrl) {
+            URL.revokeObjectURL(previewUrl);
+            previewUrl = null;
+        }
+
     });
+
 });
 </script>
+
 @endsection

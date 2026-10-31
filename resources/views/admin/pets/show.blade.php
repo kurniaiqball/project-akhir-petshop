@@ -1,45 +1,9 @@
 
 @extends('layouts.admin')
 
+@section('title', 'Detail Hewan - PetCare')
+
 @section('content')
-<style>
-    .pet-detail-avatar {
-        width: 120px;
-        height: 120px;
-        border-radius: 50%;
-        overflow: hidden;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: #eff6ff;
-        color: #2563eb;
-        font-size: 48px;
-        margin: 0 auto 16px;
-    }
-
-    .pet-detail-avatar img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-
-    .pet-detail-card {
-        border: none;
-        border-radius: 16px;
-    }
-
-    .pet-detail-label {
-        font-size: 13px;
-        color: #64748b;
-        margin-bottom: 5px;
-    }
-
-    .pet-detail-value {
-        font-weight: 600;
-        color: #334155;
-        overflow-wrap: anywhere;
-    }
-</style>
 
 <div class="container-fluid py-4">
 
@@ -68,11 +32,12 @@
     </div>
 
     {{-- Informasi utama --}}
-    <div class="card pet-detail-card shadow-sm mb-4">
+    <div class="card border-0 shadow-sm rounded-3 mb-4">
         <div class="card-body p-4 p-md-5">
 
             <div class="text-center mb-4">
-                <div class="pet-detail-avatar">
+
+                <div class="mb-3">
                     @if (
                         $pet->foto &&
                         \Illuminate\Support\Facades\Storage::disk('public')->exists($pet->foto)
@@ -80,15 +45,21 @@
                         <img
                             src="{{ asset('storage/' . $pet->foto) }}"
                             alt="Foto {{ $pet->nama_pet }}"
+                            class="rounded-circle img-thumbnail"
+                            width="120"
+                            height="120"
                         >
                     @else
-                        @if (strtolower($pet->jenis) === 'kucing')
-                            <i class="bi bi-emoji-smile"></i>
-                        @elseif (strtolower($pet->jenis) === 'anjing')
-                            <i class="bi bi-heart"></i>
-                        @else
-                            <i class="bi bi-paw"></i>
-                        @endif
+                        <div class="rounded-circle bg-primary-subtle text-primary d-inline-flex align-items-center justify-content-center"
+                             style="width: 120px; height: 120px;">
+                            @if (strtolower($pet->jenis) === 'kucing')
+                                <i class="bi bi-emoji-smile fs-1"></i>
+                            @elseif (strtolower($pet->jenis) === 'anjing')
+                                <i class="bi bi-heart fs-1"></i>
+                            @else
+                                <i class="bi bi-paw fs-1"></i>
+                            @endif
+                        </div>
                     @endif
                 </div>
 
@@ -105,40 +76,40 @@
 
                 {{-- ID Hewan --}}
                 <div class="col-md-4">
-                    <div class="pet-detail-label">ID Hewan</div>
-                    <div class="pet-detail-value">
+                    <div class="text-muted small mb-1">ID Hewan</div>
+                    <div class="fw-semibold text-dark">
                         {{ $pet->id_pet }}
                     </div>
                 </div>
 
                 {{-- Pemilik --}}
                 <div class="col-md-4">
-                    <div class="pet-detail-label">Pemilik Hewan</div>
-                    <div class="pet-detail-value">
+                    <div class="text-muted small mb-1">Pemilik Hewan</div>
+                    <div class="fw-semibold text-dark">
                         {{ $pet->customer->nama ?? 'Customer tidak ditemukan' }}
                     </div>
                 </div>
 
                 {{-- Jenis --}}
                 <div class="col-md-4">
-                    <div class="pet-detail-label">Jenis Hewan</div>
-                    <div class="pet-detail-value">
+                    <div class="text-muted small mb-1">Jenis Hewan</div>
+                    <div class="fw-semibold text-dark">
                         {{ $pet->jenis }}
                     </div>
                 </div>
 
                 {{-- Ras --}}
                 <div class="col-md-4">
-                    <div class="pet-detail-label">Ras</div>
-                    <div class="pet-detail-value">
+                    <div class="text-muted small mb-1">Ras</div>
+                    <div class="fw-semibold text-dark">
                         {{ $pet->ras ?: '-' }}
                     </div>
                 </div>
 
                 {{-- Jenis Kelamin --}}
                 <div class="col-md-4">
-                    <div class="pet-detail-label">Jenis Kelamin</div>
-                    <div class="pet-detail-value">
+                    <div class="text-muted small mb-1">Jenis Kelamin</div>
+                    <div class="fw-semibold text-dark">
                         @if ($pet->jenis_kelamin === 'Jantan')
                             <i class="bi bi-gender-male text-primary me-1"></i>
                         @else
@@ -151,8 +122,8 @@
 
                 {{-- Umur --}}
                 <div class="col-md-4">
-                    <div class="pet-detail-label">Umur</div>
-                    <div class="pet-detail-value">
+                    <div class="text-muted small mb-1">Umur</div>
+                    <div class="fw-semibold text-dark">
                         @php
                             $tahun = (int) ($pet->umur_tahun ?? 0);
                             $bulan = (int) ($pet->umur_bulan ?? 0);
@@ -174,24 +145,24 @@
 
                 {{-- Catatan --}}
                 <div class="col-12">
-                    <div class="pet-detail-label">Catatan</div>
-                    <div class="pet-detail-value fw-normal">
+                    <div class="text-muted small mb-1">Catatan</div>
+                    <div class="text-dark">
                         {{ $pet->catatan ?: 'Tidak ada catatan.' }}
                     </div>
                 </div>
 
                 {{-- Tanggal dibuat --}}
                 <div class="col-md-6">
-                    <div class="pet-detail-label">Tanggal Ditambahkan</div>
-                    <div class="pet-detail-value">
+                    <div class="text-muted small mb-1">Tanggal Ditambahkan</div>
+                    <div class="fw-semibold text-dark">
                         {{ $pet->created_at?->format('d M Y, H:i') ?? '-' }}
                     </div>
                 </div>
 
                 {{-- Terakhir diperbarui --}}
                 <div class="col-md-6">
-                    <div class="pet-detail-label">Terakhir Diperbarui</div>
-                    <div class="pet-detail-value">
+                    <div class="text-muted small mb-1">Terakhir Diperbarui</div>
+                    <div class="fw-semibold text-dark">
                         {{ $pet->updated_at?->format('d M Y, H:i') ?? '-' }}
                     </div>
                 </div>
@@ -201,10 +172,11 @@
     </div>
 
     {{-- Riwayat Booking --}}
-    <div class="card pet-detail-card shadow-sm">
+    <div class="card border-0 shadow-sm rounded-3">
+
         <div class="card-header bg-white border-0 p-4">
             <h5 class="fw-bold mb-1">
-                <i class="bi bi-calendar-check text-success me-2"></i>
+                <i class="bi bi-calendar-check text-primary me-2"></i>
                 Riwayat Booking
             </h5>
 
@@ -215,6 +187,7 @@
 
         <div class="table-responsive">
             <table class="table table-hover align-middle mb-0">
+
                 <thead class="table-light">
                     <tr>
                         <th class="px-4 py-3">ID Booking</th>
@@ -228,19 +201,20 @@
                 <tbody>
                     @forelse ($pet->bookings as $booking)
                         <tr>
+
                             {{-- ID Booking --}}
                             <td class="px-4">
                                 {{ $booking->id_booking }}
                             </td>
 
-                            {{-- Nama Service: dikembalikan ke kode sebelumnya --}}
+                            {{-- Nama Service --}}
                             <td>
                                 {{ $booking->service->nama_service ?? '-' }}
                             </td>
 
                             {{-- Tanggal Booking --}}
                             <td>
-                                {{ $booking->tanggal_booking?->format('d/m/Y') }}
+                                {{ $booking->tanggal_booking?->format('d/m/Y') ?? '-' }}
                             </td>
 
                             {{-- Jam Booking --}}
@@ -254,27 +228,47 @@
                             {{-- Status --}}
                             <td>
                                 @php
-                                    $status = $booking->status ?? 'Tidak diketahui';
+                                    $status = strtolower($booking->status ?? '');
 
-                                    $badgeClass = match (strtolower($status)) {
-                                        'selesai', 'completed' =>
-                                            'bg-success-subtle text-success',
+                                    $statusConfig = match ($status) {
+                                        'menunggu' => [
+                                            'class' => 'bg-warning-subtle text-warning-emphasis',
+                                            'icon' => 'bi-clock',
+                                            'label' => 'Menunggu',
+                                        ],
 
-                                        'dibatalkan', 'cancelled' =>
-                                            'bg-danger-subtle text-danger',
+                                        'dikonfirmasi' => [
+                                            'class' => 'bg-primary-subtle text-primary',
+                                            'icon' => 'bi-check-circle',
+                                            'label' => 'Dikonfirmasi',
+                                        ],
 
-                                        'menunggu', 'pending' =>
-                                            'bg-warning-subtle text-warning-emphasis',
+                                        'selesai' => [
+                                            'class' => 'bg-success-subtle text-success',
+                                            'icon' => 'bi-check-circle-fill',
+                                            'label' => 'Selesai',
+                                        ],
 
-                                        default =>
-                                            'bg-secondary-subtle text-secondary',
+                                        'dibatalkan' => [
+                                            'class' => 'bg-danger-subtle text-danger',
+                                            'icon' => 'bi-x-circle',
+                                            'label' => 'Dibatalkan',
+                                        ],
+
+                                        default => [
+                                            'class' => 'bg-secondary-subtle text-secondary',
+                                            'icon' => 'bi-question-circle',
+                                            'label' => ucfirst($booking->status ?? 'Tidak diketahui'),
+                                        ],
                                     };
                                 @endphp
 
-                                <span class="badge {{ $badgeClass }}">
-                                    {{ ucfirst($status) }}
+                                <span class="badge rounded-pill {{ $statusConfig['class'] }} px-3 py-2">
+                                    <i class="bi {{ $statusConfig['icon'] }} me-1"></i>
+                                    {{ $statusConfig['label'] }}
                                 </span>
                             </td>
+
                         </tr>
                     @empty
                         <tr>
@@ -292,6 +286,7 @@
                         </tr>
                     @endforelse
                 </tbody>
+
             </table>
         </div>
     </div>

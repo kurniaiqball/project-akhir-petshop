@@ -1,3 +1,4 @@
+
 @extends('layouts.admin')
 
 @section('title', 'Tambah Produk - PetCare')
@@ -8,18 +9,19 @@
     Tambahkan produk baru ke dalam sistem.
 @endsection
 
-
 @section('content')
 
-<div class="card border-0 shadow-sm">
+<div class="card shadow-sm border-0">
 
     <div class="card-body">
 
+        {{-- ALERT ERROR --}}
         @if ($errors->any())
 
-            <div class="alert alert-danger">
+            <div class="alert alert-danger" role="alert">
 
                 <strong>
+                    <i class="bi bi-exclamation-circle me-1"></i>
                     Ada kesalahan:
                 </strong>
 
@@ -38,6 +40,7 @@
         @endif
 
 
+        {{-- FORM TAMBAH PRODUK --}}
         <form
             action="{{ route('admin.products.store') }}"
             method="POST"
@@ -46,14 +49,15 @@
 
             @csrf
 
-
             <div class="row">
 
+                {{-- KOLOM KIRI --}}
                 <div class="col-md-8">
 
+                    {{-- NAMA PRODUK --}}
                     <div class="mb-3">
 
-                        <label class="form-label">
+                        <label class="form-label fw-semibold">
                             Nama Produk
                         </label>
 
@@ -69,9 +73,10 @@
                     </div>
 
 
+                    {{-- KATEGORI --}}
                     <div class="mb-3">
 
-                        <label class="form-label">
+                        <label class="form-label fw-semibold">
                             Kategori
                         </label>
 
@@ -101,13 +106,15 @@
                     </div>
 
 
+                    {{-- HARGA DAN STOK --}}
                     <div class="row">
 
+                        {{-- HARGA --}}
                         <div class="col-md-6">
 
                             <div class="mb-3">
 
-                                <label class="form-label">
+                                <label class="form-label fw-semibold">
                                     Harga
                                 </label>
 
@@ -125,11 +132,12 @@
                         </div>
 
 
+                        {{-- STOK --}}
                         <div class="col-md-6">
 
                             <div class="mb-3">
 
-                                <label class="form-label">
+                                <label class="form-label fw-semibold">
                                     Stok
                                 </label>
 
@@ -149,9 +157,10 @@
                     </div>
 
 
+                    {{-- DESKRIPSI --}}
                     <div class="mb-3">
 
-                        <label class="form-label">
+                        <label class="form-label fw-semibold">
                             Deskripsi
                         </label>
 
@@ -167,11 +176,13 @@
                 </div>
 
 
+                {{-- KOLOM KANAN --}}
                 <div class="col-md-4">
 
+                    {{-- GAMBAR PRODUK --}}
                     <div class="mb-3">
 
-                        <label class="form-label">
+                        <label class="form-label fw-semibold">
                             Gambar Produk
                         </label>
 
@@ -182,9 +193,9 @@
                             accept=".jpg,.jpeg,.png,.webp"
                         >
 
-                        <small class="text-muted">
-                            Maksimal 2 MB.
-                        </small>
+                        <div class="form-text">
+                            Format JPG, JPEG, PNG, atau WEBP. Maksimal 2 MB.
+                        </div>
 
                     </div>
 
@@ -196,18 +207,20 @@
             <hr>
 
 
+            {{-- TOMBOL AKSI --}}
             <div class="d-flex gap-2">
 
                 <a
                     href="{{ route('admin.products.index') }}"
-                    class="btn btn-secondary"
+                    class="btn btn-outline-secondary"
                 >
+                    <i class="bi bi-arrow-left me-1"></i>
                     Kembali
                 </a>
 
                 <button
                     type="submit"
-                    class="btn btn-success"
+                    class="btn btn-primary"
                 >
                     <i class="bi bi-save me-1"></i>
                     Simpan Produk

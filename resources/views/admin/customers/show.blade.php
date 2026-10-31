@@ -1,23 +1,15 @@
+
 @extends('layouts.admin')
 
+@section('title', 'Detail Customer - PetCare')
+
+@section('page-title', 'Detail Customer')
+
+@section('page-description')
+    Informasi lengkap customer.
+@endsection
+
 @section('content')
-
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <div>
-        <h2 class="fw-bold mb-1">Detail Customer</h2>
-        <p class="text-muted mb-0">
-            Informasi lengkap customer.
-        </p>
-    </div>
-
-    <a
-        href="{{ route('admin.customers.index') }}"
-        class="btn btn-secondary"
-    >
-        <i class="bi bi-arrow-left me-1"></i>
-        Kembali
-    </a>
-</div>
 
 {{-- Informasi Customer --}}
 <div class="card border-0 shadow-sm mb-4">
@@ -30,14 +22,13 @@
                     <img
                         src="{{ asset('storage/' . $customer->foto) }}"
                         alt="Foto {{ $customer->nama }}"
-                        class="customer-profile-photo mx-auto"
+                        width="90"
+                        height="90"
+                        class="rounded-circle object-fit-cover border border-3 border-success-subtle mx-auto"
                     >
                 @else
-                    <div
-                        class="bg-success-subtle text-success rounded-circle d-flex align-items-center justify-content-center mx-auto"
-                        style="width: 90px; height: 90px;"
-                    >
-                        <i class="bi bi-person fs-1"></i>
+                    <div class="bg-success-subtle text-success rounded-circle d-flex align-items-center justify-content-center mx-auto p-4">
+                        <i class="bi bi-person display-6"></i>
                     </div>
                 @endif
 
@@ -45,7 +36,7 @@
 
             <div class="col-md-10">
 
-                <h4 class="fw-bold">
+                <h4 class="fw-bold mb-1">
                     {{ $customer->nama }}
                 </h4>
 
@@ -56,21 +47,21 @@
                 <div class="row">
 
                     <div class="col-md-6 mb-3">
-                        <small class="text-muted d-block">Email</small>
+                        <small class="text-muted d-block mb-1">Email</small>
                         <span class="fw-semibold">
                             {{ $customer->email }}
                         </span>
                     </div>
 
                     <div class="col-md-6 mb-3">
-                        <small class="text-muted d-block">Nomor HP</small>
+                        <small class="text-muted d-block mb-1">Nomor HP</small>
                         <span class="fw-semibold">
                             {{ $customer->no_hp ?? '-' }}
                         </span>
                     </div>
 
                     <div class="col-md-12">
-                        <small class="text-muted d-block">Alamat</small>
+                        <small class="text-muted d-block mb-1">Alamat</small>
                         <span class="fw-semibold">
                             {{ $customer->alamat ?? '-' }}
                         </span>
@@ -116,9 +107,21 @@
                                 </small>
                             </div>
 
-                            <span class="badge bg-light text-dark">
-                                {{ $pet->jenis_kelamin }}
-                            </span>
+                            @if ($pet->jenis_kelamin === 'Jantan')
+                                <span class="badge bg-primary align-self-start">
+                                    <i class="bi bi-gender-male me-1"></i>
+                                    Jantan
+                                </span>
+                            @elseif ($pet->jenis_kelamin === 'Betina')
+                                <span class="badge bg-danger align-self-start">
+                                    <i class="bi bi-gender-female me-1"></i>
+                                    Betina
+                                </span>
+                            @else
+                                <span class="badge bg-secondary align-self-start">
+                                    {{ $pet->jenis_kelamin ?? '-' }}
+                                </span>
+                            @endif
 
                         </div>
                     </div>
@@ -161,9 +164,31 @@
                                 </small>
                             </div>
 
-                            <span class="badge bg-success-subtle text-success">
-                                {{ $booking->status }}
-                            </span>
+                            @php
+                                $status = strtolower($booking->status ?? '');
+                            @endphp
+
+                            @if ($status === 'menunggu')
+                                <span class="badge bg-warning text-dark align-self-start">
+                                    {{ $booking->status }}
+                                </span>
+                            @elseif ($status === 'dikonfirmasi')
+                                <span class="badge bg-primary align-self-start">
+                                    {{ $booking->status }}
+                                </span>
+                            @elseif ($status === 'selesai')
+                                <span class="badge bg-success align-self-start">
+                                    {{ $booking->status }}
+                                </span>
+                            @elseif ($status === 'dibatalkan')
+                                <span class="badge bg-danger align-self-start">
+                                    {{ $booking->status }}
+                                </span>
+                            @else
+                                <span class="badge bg-secondary align-self-start">
+                                    {{ $booking->status ?? '-' }}
+                                </span>
+                            @endif
 
                         </div>
                     </div>
@@ -192,7 +217,7 @@
     <div class="card-body">
         <div class="table-responsive">
 
-            <table class="table align-middle">
+            <table class="table table-hover align-middle">
 
                 <thead class="table-light">
                     <tr>
@@ -215,14 +240,45 @@
                                 {{ $transaction->tanggal?->format('d/m/Y H:i') ?? '-' }}
                             </td>
 
-                            <td>
+                            <td class="fw-semibold">
                                 Rp {{ number_format($transaction->total, 0, ',', '.') }}
                             </td>
 
                             <td>
-                                <span class="badge bg-secondary">
-                                    {{ $transaction->status }}
-                                </span>
+                                @php
+                                    $status = strtolower($transaction->status ?? '');
+                                @endphp
+
+                                @if ($status === 'pending')
+                                    <span class="badge bg-warning text-dark">
+                                        <i class="bi bi-clock me-1"></i>
+                                        Pending
+                                    </span>
+                                @elseif ($status === 'diproses')
+                                    <span class="badge bg-primary">
+                                        <i class="bi bi-arrow-repeat me-1"></i>
+                                        Diproses
+                                    </span>
+                                @elseif ($status === 'siap diambil')
+                                    <span class="badge bg-info text-dark">
+                                        <i class="bi bi-bag-check me-1"></i>
+                                        Siap Diambil
+                                    </span>
+                                @elseif ($status === 'selesai')
+                                    <span class="badge bg-success">
+                                        <i class="bi bi-check-circle me-1"></i>
+                                        Selesai
+                                    </span>
+                                @elseif ($status === 'dibatalkan')
+                                    <span class="badge bg-danger">
+                                        <i class="bi bi-x-circle me-1"></i>
+                                        Dibatalkan
+                                    </span>
+                                @else
+                                    <span class="badge bg-secondary">
+                                        {{ $transaction->status ?? '-' }}
+                                    </span>
+                                @endif
                             </td>
                         </tr>
                     @empty
@@ -243,15 +299,15 @@
     </div>
 </div>
 
-<style>
-    .customer-profile-photo {
-        width: 90px;
-        height: 90px;
-        object-fit: cover;
-        border-radius: 50%;
-        border: 3px solid #d1fae5;
-        display: block;
-    }
-</style>
+{{-- Tombol kembali --}}
+<div class="d-flex justify-content-end mb-4">
+    <a
+        href="{{ route('admin.customers.index') }}"
+        class="btn btn-outline-secondary"
+    >
+        <i class="bi bi-arrow-left me-1"></i>
+        Kembali
+    </a>
+</div>
 
 @endsection

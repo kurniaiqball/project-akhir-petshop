@@ -1,4 +1,7 @@
+
 @extends('layouts.admin')
+
+@section('title', 'Tambah Kategori - PetCare')
 
 @section('content')
 
@@ -10,7 +13,6 @@
 </div>
 
 <div class="card border-0 shadow-sm">
-
     <div class="card-body">
 
         @if($errors->any())
@@ -27,11 +29,9 @@
             action="{{ route('admin.categories.store') }}"
             method="POST"
         >
-
             @csrf
 
             <div class="mb-3">
-
                 <label class="form-label fw-semibold">
                     Nama Kategori
                 </label>
@@ -44,32 +44,26 @@
                     placeholder="Contoh: Makanan"
                     required
                 >
-
             </div>
 
             <div class="d-flex gap-2">
-
                 <a
                     href="{{ route('admin.categories.index') }}"
-                    class="btn btn-secondary"
+                    class="btn btn-outline-secondary"
                 >
+                    <i class="bi bi-arrow-left me-1"></i>
                     Kembali
                 </a>
 
-                <button
-                    type="submit"
-                    class="btn btn-success"
-                >
+                <button type="submit" class="btn btn-primary">
                     <i class="bi bi-save me-1"></i>
                     Simpan
                 </button>
-
             </div>
 
         </form>
 
     </div>
-
 </div>
 
 @endsection

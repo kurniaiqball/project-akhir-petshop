@@ -1,3 +1,4 @@
+
 @extends('layouts.admin')
 
 @section('title', 'Produk - PetCare')
@@ -10,8 +11,9 @@
 
 @section('content')
 
+{{-- ALERT SUCCESS --}}
 @if (session('success'))
-    <div class="alert alert-success alert-dismissible fade show">
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
         <i class="bi bi-check-circle me-2"></i>
         {{ session('success') }}
 
@@ -23,8 +25,9 @@
     </div>
 @endif
 
+{{-- ALERT ERROR --}}
 @if (session('error'))
-    <div class="alert alert-danger alert-dismissible fade show">
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
         <i class="bi bi-exclamation-circle me-2"></i>
         {{ session('error') }}
 
@@ -37,9 +40,10 @@
 @endif
 
 
-<div class="card border-0 shadow-sm">
+{{-- CARD PRODUK --}}
+<div class="card shadow-sm border-0">
 
-    <div class="card-body p-4">
+    <div class="card-body">
 
         {{-- TOOLBAR --}}
         <div class="d-flex justify-content-between align-items-center mb-4">
@@ -47,8 +51,7 @@
             <form
                 action="{{ route('admin.products.index') }}"
                 method="GET"
-                class="d-flex"
-                style="width: 320px;"
+                class="d-flex gap-2"
             >
 
                 <input
@@ -61,7 +64,7 @@
 
                 <button
                     type="submit"
-                    class="btn btn-success ms-2 px-3"
+                    class="btn btn-primary"
                 >
                     <i class="bi bi-search"></i>
                 </button>
@@ -71,7 +74,7 @@
 
             <a
                 href="{{ route('admin.products.create') }}"
-                class="btn btn-success"
+                class="btn btn-primary"
             >
                 <i class="bi bi-plus-lg me-1"></i>
                 Tambah Produk
@@ -86,10 +89,9 @@
             <table class="table table-hover align-middle mb-0">
 
                 <thead class="table-light">
-
                     <tr>
 
-                        <th width="60">
+                        <th class="px-3" width="60">
                             No
                         </th>
 
@@ -109,12 +111,11 @@
                             Stok
                         </th>
 
-                        <th width="140">
+                        <th width="140" class="text-center">
                             Aksi
                         </th>
 
                     </tr>
-
                 </thead>
 
 
@@ -125,7 +126,7 @@
                         <tr>
 
                             {{-- NO --}}
-                            <td class="text-muted">
+                            <td class="px-3 text-muted">
                                 {{ $products->firstItem() + $loop->index }}
                             </td>
 
@@ -142,8 +143,7 @@
                                             alt="{{ $product->nama_product }}"
                                             width="48"
                                             height="48"
-                                            class="rounded me-3"
-                                            style="object-fit: cover;"
+                                            class="rounded me-3 object-fit-cover"
                                         >
 
                                     @else
@@ -187,9 +187,7 @@
 
                             {{-- HARGA --}}
                             <td class="fw-semibold">
-
                                 Rp {{ number_format($product->harga, 0, ',', '.') }}
-
                             </td>
 
 
@@ -216,8 +214,9 @@
                             {{-- AKSI --}}
                             <td>
 
-                                <div class="d-flex gap-1">
+                                <div class="d-flex align-items-center justify-content-center gap-1">
 
+                                    {{-- DETAIL --}}
                                     <a
                                         href="{{ route('admin.products.show', $product) }}"
                                         class="btn btn-sm btn-outline-primary"
@@ -227,6 +226,7 @@
                                     </a>
 
 
+                                    {{-- EDIT --}}
                                     <a
                                         href="{{ route('admin.products.edit', $product) }}"
                                         class="btn btn-sm btn-outline-warning"
@@ -236,9 +236,11 @@
                                     </a>
 
 
+                                    {{-- HAPUS --}}
                                     <form
                                         action="{{ route('admin.products.destroy', $product) }}"
                                         method="POST"
+                                        class="m-0"
                                         onsubmit="return confirm('Yakin ingin menghapus produk ini?')"
                                     >
 
@@ -266,15 +268,16 @@
 
                         <tr>
 
-                            <td
-                                colspan="6"
-                                class="text-center py-5"
-                            >
+                            <td colspan="6" class="text-center py-5">
 
-                                <i class="bi bi-box-seam fs-1 text-muted"></i>
+                                <div class="text-muted">
 
-                                <div class="mt-2 text-muted">
-                                    Belum ada produk.
+                                    <i class="bi bi-box-seam fs-1 d-block mb-2"></i>
+
+                                    <p class="mb-0">
+                                        Belum ada produk.
+                                    </p>
+
                                 </div>
 
                             </td>
@@ -293,10 +296,8 @@
         {{-- PAGINATION --}}
         @if ($products->hasPages())
 
-            <div class="mt-4">
-
-                {{ $products->withQueryString()->links() }}
-
+            <div class="card-footer bg-white mt-3 border-0">
+                {{ $products->withQueryString()->links('pagination::bootstrap-5') }}
             </div>
 
         @endif
