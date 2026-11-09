@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\BookingCreatedMail;
+use App\Mail\BookingConfirmedMail;
 use App\Models\Booking;
 use App\Models\Customer;
 use App\Models\Pet;
 use App\Models\Service;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 class BookingController extends Controller
 {
@@ -123,10 +126,39 @@ class BookingController extends Controller
                 ]);
         }
 
+        /*
+        |--------------------------------------------------------------------------
+        | Simpan Booking
+        |--------------------------------------------------------------------------
+        */
+
         $validated['id_customer'] = $customer->id_customer;
         $validated['status'] = 'Menunggu';
 
-        Booking::create($validated);
+        $booking = Booking::create($validated);
+
+        /*
+        |--------------------------------------------------------------------------
+        | Kirim Email Booking Berhasil Dibuat
+        |--------------------------------------------------------------------------
+        */
+
+        $booking->load([
+            'customer',
+            'pet',
+            'service',
+        ]);
+
+        $email = $booking->customer->email ?? null;
+
+        if ($email) {
+            try {
+                Mail::to($email)
+                    ->send(new BookingCreatedMail($booking));
+            } catch (\Throwable $e) {
+                report($e);
+            }
+        }
 
         return redirect()
             ->route('customer.history')
@@ -152,7 +184,7 @@ class BookingController extends Controller
 
         $bookings = Booking::with([
             'pet',
-            'service'
+            'service',
         ])
             ->where(
                 'id_customer',
@@ -240,6 +272,12 @@ class BookingController extends Controller
         );
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | ADMIN UPDATE STATUS + EMAIL KONFIRMASI
+    |--------------------------------------------------------------------------
+    */
+
     public function adminUpdateStatus(
         Request $request,
         Booking $booking
@@ -251,9 +289,48 @@ class BookingController extends Controller
             ],
         ]);
 
+        $statusLama = $booking->status;
+        $statusBaru = $validated['status'];
+
+        // Update status booking
         $booking->update([
-            'status' => $validated['status'],
+            'status' => $statusBaru,
         ]);
+
+        /*
+        |--------------------------------------------------------------------------
+        | Kirim Email Jika Status Berubah Menjadi Dikonfirmasi
+        |--------------------------------------------------------------------------
+        */
+
+        if (
+            $statusLama !== 'Dikonfirmasi' &&
+            $statusBaru === 'Dikonfirmasi'
+        ) {
+            $booking->load([
+                'customer',
+                'pet',
+                'service',
+            ]);
+
+            $email = $booking->customer->email ?? null;
+
+            if ($email) {
+                try {
+                    Mail::to($email)
+                        ->send(new BookingConfirmedMail($booking));
+                } catch (\Throwable $e) {
+                    report($e);
+
+                    return redirect()
+                        ->route('admin.bookings.index')
+                        ->with(
+                            'error',
+                            'Status berhasil diperbarui, tetapi email konfirmasi gagal dikirim.'
+                        );
+                }
+            }
+        }
 
         return redirect()
             ->route('admin.bookings.index')
