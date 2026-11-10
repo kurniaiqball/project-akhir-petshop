@@ -39,39 +39,76 @@
     </div>
 @endif
 
-
 {{-- CARD PRODUK --}}
 <div class="card shadow-sm border-0">
 
     <div class="card-body">
 
         {{-- TOOLBAR --}}
-        <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
 
+            {{-- FORM PENCARIAN DAN FILTER --}}
             <form
                 action="{{ route('admin.products.index') }}"
                 method="GET"
-                class="d-flex gap-2"
+                class="d-flex align-items-center gap-2 flex-wrap"
             >
 
-                <input
-                    type="text"
-                    name="search"
-                    class="form-control"
-                    placeholder="Cari produk..."
-                    value="{{ request('search') }}"
-                >
+                {{-- SEARCH PRODUK --}}
+                <div style="width: 230px;">
+                    <input
+                        type="text"
+                        name="search"
+                        class="form-control"
+                        placeholder="Cari produk..."
+                        value="{{ request('search') }}"
+                    >
+                </div>
 
+                {{-- DROPDOWN KATEGORI --}}
+                <div style="width: 165px;">
+                    <select
+                        name="category"
+                        class="form-select"
+                        aria-label="Filter kategori"
+                    >
+                        <option value="">Semua Kategori</option>
+
+                        @foreach ($categories as $category)
+                            <option
+                                value="{{ $category->id_category }}"
+                                {{ request('category') == $category->id_category ? 'selected' : '' }}
+                            >
+                                {{ $category->nama_category }}
+                            </option>
+                        @endforeach
+
+                    </select>
+                </div>
+
+                {{-- TOMBOL CARI --}}
                 <button
                     type="submit"
                     class="btn btn-primary"
+                    title="Cari produk"
                 >
                     <i class="bi bi-search"></i>
                 </button>
 
+                {{-- RESET FILTER --}}
+                @if (request()->filled('search') || request()->filled('category'))
+                    <a
+                        href="{{ route('admin.products.index') }}"
+                        class="btn btn-outline-secondary"
+                        title="Reset pencarian"
+                    >
+                        <i class="bi bi-arrow-counterclockwise"></i>
+                    </a>
+                @endif
+
             </form>
 
-
+            {{-- TAMBAH PRODUK --}}
             <a
                 href="{{ route('admin.products.create') }}"
                 class="btn btn-primary"
@@ -118,7 +155,6 @@
                     </tr>
                 </thead>
 
-
                 <tbody>
 
                     @forelse ($products as $product)
@@ -129,7 +165,6 @@
                             <td class="px-3 text-muted">
                                 {{ $products->firstItem() + $loop->index }}
                             </td>
-
 
                             {{-- PRODUK --}}
                             <td>
@@ -157,7 +192,6 @@
 
                                     @endif
 
-
                                     <div>
 
                                         <div class="fw-semibold">
@@ -174,7 +208,6 @@
 
                             </td>
 
-
                             {{-- KATEGORI --}}
                             <td>
 
@@ -184,12 +217,10 @@
 
                             </td>
 
-
                             {{-- HARGA --}}
-                            <td class="fw-semibold">
+                            <td class="fw-semibold text-nowrap">
                                 Rp {{ number_format($product->harga, 0, ',', '.') }}
                             </td>
-
 
                             {{-- STOK --}}
                             <td>
@@ -210,7 +241,6 @@
 
                             </td>
 
-
                             {{-- AKSI --}}
                             <td>
 
@@ -225,7 +255,6 @@
                                         <i class="bi bi-eye"></i>
                                     </a>
 
-
                                     {{-- EDIT --}}
                                     <a
                                         href="{{ route('admin.products.edit', $product) }}"
@@ -234,7 +263,6 @@
                                     >
                                         <i class="bi bi-pencil"></i>
                                     </a>
-
 
                                     {{-- HAPUS --}}
                                     <form
@@ -263,7 +291,6 @@
 
                         </tr>
 
-
                     @empty
 
                         <tr>
@@ -275,7 +302,7 @@
                                     <i class="bi bi-box-seam fs-1 d-block mb-2"></i>
 
                                     <p class="mb-0">
-                                        Belum ada produk.
+                                        Produk tidak ditemukan.
                                     </p>
 
                                 </div>

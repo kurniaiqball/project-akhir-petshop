@@ -16,19 +16,38 @@ class ProductController extends Controller
     {
         $query = Product::with('category');
 
-        // Pencarian produk
+        // Pencarian produk berdasarkan nama
         if ($request->filled('search')) {
             $search = $request->search;
 
-            $query->where('nama_product', 'like', "%{$search}%");
+            $query->where(
+                'nama_product',
+                'like',
+                "%{$search}%"
+            );
         }
 
+        // Filter produk berdasarkan kategori
+        if ($request->filled('category')) {
+            $query->where(
+                'id_category',
+                $request->category
+            );
+        }
+
+        // Ambil produk dengan pagination
         $products = $query
             ->latest('id_product')
             ->paginate(10)
             ->withQueryString();
 
-        return view('admin.products.index', compact('products'));
+        // Ambil semua kategori untuk dropdown filter
+        $categories = Category::orderBy('nama_category')->get();
+
+        return view('admin.products.index', compact(
+            'products',
+            'categories'
+        ));
     }
 
 
@@ -57,6 +76,7 @@ class ProductController extends Controller
             'gambar' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
         ]);
 
+        // Upload gambar produk
         if ($request->hasFile('gambar')) {
             $validated['gambar'] = $request
                 ->file('gambar')
@@ -110,12 +130,15 @@ class ProductController extends Controller
             'gambar' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
         ]);
 
+        // Upload gambar baru jika tersedia
         if ($request->hasFile('gambar')) {
 
+            // Hapus gambar lama
             if ($product->gambar) {
                 Storage::disk('public')->delete($product->gambar);
             }
 
+            // Simpan gambar baru
             $validated['gambar'] = $request
                 ->file('gambar')
                 ->store('products', 'public');
@@ -134,6 +157,7 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
+        // Hapus gambar produk
         if ($product->gambar) {
             Storage::disk('public')->delete($product->gambar);
         }
