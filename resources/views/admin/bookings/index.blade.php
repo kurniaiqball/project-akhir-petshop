@@ -1,143 +1,271 @@
 
 @extends('layouts.admin')
 
-@section('title', 'Booking Grooming - PetCare')
+@section('title', 'Booking Grooming - Galaxy Petshop')
+
+@section('page-title', 'Booking Grooming')
+
+@section('page-description')
+    Kelola jadwal grooming customer Galaxy Petshop.
+@endsection
 
 @section('content')
 
-<div class="container-fluid py-4">
+@push('styles')
+<style>
+    .booking-card {
+        border: none;
+        border-radius: 15px;
+    }
 
-    {{-- Header --}}
-    <div class="mb-4">
-        <h2 class="fw-bold mb-1">Booking Grooming</h2>
-        <p class="text-muted mb-0">
-            Kelola jadwal grooming customer.
-        </p>
+    .btn-orange {
+        background-color: #ff922b;
+        border-color: #ff922b;
+        color: white;
+    }
+
+    .btn-orange:hover {
+        background-color: #f07812;
+        border-color: #f07812;
+        color: white;
+    }
+
+    .btn-outline-orange {
+        border-color: #ff922b;
+        color: #ff922b;
+    }
+
+    .btn-outline-orange:hover {
+        background-color: #ff922b;
+        color: white;
+    }
+
+    .table thead th {
+        background-color: #fff3e6;
+        color: #754016;
+        border-bottom: 2px solid #ff922b;
+        font-size: 13px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .table tbody tr:hover {
+        background-color: #fffaf5;
+    }
+
+    .table tbody td {
+        font-size: 14px;
+        vertical-align: middle;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: #ff922b;
+        box-shadow: 0 0 0 0.2rem rgba(255,146,43,.15);
+    }
+
+    .btn {
+        border-radius: 9px;
+    }
+
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 8px 12px;
+        border-radius: 30px;
+        font-size: 11px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .action-form {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        min-width: 165px;
+    }
+
+    .action-form .form-select {
+        flex: 1;
+        min-width: 0;
+        font-size: 12px;
+    }
+
+    .action-form button {
+        flex-shrink: 0;
+    }
+
+    .empty-icon {
+        width: 58px;
+        height: 58px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #fff0df;
+        color: #ff922b;
+        border-radius: 15px;
+        font-size: 25px;
+    }
+
+    @media (max-width: 768px) {
+        .booking-card .card-body {
+            padding: 18px !important;
+        }
+
+        .booking-toolbar {
+            align-items: stretch !important;
+        }
+
+        .booking-search {
+            width: 100%;
+        }
+
+        .booking-search input {
+            width: 100% !important;
+        }
+
+        .booking-search select {
+            flex: 1;
+            width: auto !important;
+        }
+
+        .table {
+            min-width: 850px;
+        }
+    }
+</style>
+@endpush
+
+{{-- NOTIFIKASI SUCCESS --}}
+@if(session('success'))
+    <div class="alert alert-success alert-dismissible fade show rounded-3">
+        <i class="bi bi-check-circle me-2"></i>
+        {{ session('success') }}
+
+        <button type="button"
+                class="btn-close"
+                data-bs-dismiss="alert"></button>
     </div>
+@endif
 
-    {{-- Success Message --}}
-    @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
-            <i class="bi bi-check-circle me-2"></i>
-            {{ session('success') }}
+{{-- NOTIFIKASI ERROR --}}
+@if(session('error'))
+    <div class="alert alert-danger alert-dismissible fade show rounded-3">
+        <i class="bi bi-exclamation-circle me-2"></i>
+        {{ session('error') }}
 
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    @endif
+        <button type="button"
+                class="btn-close"
+                data-bs-dismiss="alert"></button>
+    </div>
+@endif
 
-    {{-- Error Message --}}
-    @if(session('error'))
-        <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
-            <i class="bi bi-exclamation-circle me-2"></i>
-            {{ session('error') }}
+{{-- CARD BOOKING --}}
+<div class="card booking-card shadow-sm">
 
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    @endif
+    <div class="card-body p-3 p-md-4">
 
-    {{-- Main Card --}}
-    <div class="card border-0 shadow-sm rounded-3">
+        {{-- TOOLBAR --}}
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4 booking-toolbar">
 
-        {{-- Search & Filter --}}
-        <div class="card-body p-4 border-bottom">
+            <div>
+                <h5 class="fw-bold mb-1">
+                    Daftar Booking Grooming
+                </h5>
 
+                <small class="text-muted">
+                    Total booking pada halaman ini:
+                    {{ $bookings->count() }} booking
+                </small>
+            </div>
+
+            {{-- SEARCH DAN FILTER --}}
             <form
                 action="{{ route('admin.bookings.index') }}"
                 method="GET"
-                class="row g-2"
+                class="d-flex align-items-center gap-2 flex-wrap booking-search"
             >
 
-                {{-- Search --}}
-                <div class="col-lg-6 col-md-6">
-                    <div class="input-group">
-                        <span class="input-group-text bg-white">
-                            <i class="bi bi-search text-muted"></i>
-                        </span>
+                {{-- SEARCH --}}
+                <input
+                    type="text"
+                    name="search"
+                    class="form-control"
+                    style="width: 250px;"
+                    placeholder="Cari customer, hewan, layanan..."
+                    value="{{ request('search') }}"
+                >
 
-                        <input
-                            type="text"
-                            name="search"
-                            class="form-control"
-                            placeholder="Cari customer, hewan, atau layanan..."
-                            value="{{ request('search') }}"
-                        >
-                    </div>
-                </div>
+                {{-- FILTER STATUS --}}
+                <select
+                    name="status"
+                    class="form-select"
+                    style="width: 165px;"
+                >
 
-                {{-- Status Filter --}}
-                <div class="col-lg-3 col-md-3">
-                    <select name="status" class="form-select">
-                        <option value="">Semua Status</option>
+                    <option value="">Semua Status</option>
 
-                        <option
-                            value="Menunggu"
-                            {{ request('status') === 'Menunggu' ? 'selected' : '' }}
-                        >
-                            Menunggu
-                        </option>
+                    <option value="Menunggu"
+                        {{ request('status') === 'Menunggu' ? 'selected' : '' }}>
+                        Menunggu
+                    </option>
 
-                        <option
-                            value="Dikonfirmasi"
-                            {{ request('status') === 'Dikonfirmasi' ? 'selected' : '' }}
-                        >
-                            Dikonfirmasi
-                        </option>
+                    <option value="Dikonfirmasi"
+                        {{ request('status') === 'Dikonfirmasi' ? 'selected' : '' }}>
+                        Dikonfirmasi
+                    </option>
 
-                        <option
-                            value="Selesai"
-                            {{ request('status') === 'Selesai' ? 'selected' : '' }}
-                        >
-                            Selesai
-                        </option>
+                    <option value="Selesai"
+                        {{ request('status') === 'Selesai' ? 'selected' : '' }}>
+                        Selesai
+                    </option>
 
-                        <option
-                            value="Dibatalkan"
-                            {{ request('status') === 'Dibatalkan' ? 'selected' : '' }}
-                        >
-                            Dibatalkan
-                        </option>
-                    </select>
-                </div>
+                    <option value="Dibatalkan"
+                        {{ request('status') === 'Dibatalkan' ? 'selected' : '' }}>
+                        Dibatalkan
+                    </option>
 
-                {{-- Search Button --}}
-                <div class="col-lg-1 col-md-1">
-                    <button
-                        type="submit"
-                        class="btn btn-primary w-100"
-                        title="Cari"
-                    >
-                        <i class="bi bi-search"></i>
-                    </button>
-                </div>
+                </select>
 
-                {{-- Reset --}}
-                <div class="col-lg-2 col-md-2">
+                {{-- BUTTON SEARCH --}}
+                <button
+                    type="submit"
+                    class="btn btn-orange px-3"
+                    title="Cari booking"
+                >
+                    <i class="bi bi-search"></i>
+                </button>
+
+                {{-- RESET --}}
+                @if(request()->filled('search') || request()->filled('status'))
                     <a
                         href="{{ route('admin.bookings.index') }}"
-                        class="btn btn-outline-secondary w-100"
+                        class="btn btn-outline-secondary"
+                        title="Reset pencarian"
                     >
-                        Reset
+                        <i class="bi bi-arrow-counterclockwise"></i>
                     </a>
-                </div>
+                @endif
 
             </form>
 
         </div>
 
-        {{-- Table --}}
+        {{-- TABLE --}}
         <div class="table-responsive">
 
             <table class="table table-hover align-middle mb-0">
 
-                <thead class="table-light">
+                <thead>
                     <tr>
-                        <th class="px-4 py-3">No</th>
-                        <th class="py-3">Customer</th>
-                        <th class="py-3">Hewan</th>
-                        <th class="py-3">Layanan</th>
-                        <th class="py-3">Jadwal</th>
-                        <th class="py-3">Status</th>
-                        <th class="py-3" width="190">Aksi</th>
+                        <th width="60" class="px-3 text-center">No</th>
+                        <th>Customer</th>
+                        <th>Hewan</th>
+                        <th>Layanan</th>
+                        <th>Jadwal</th>
+                        <th>Status</th>
+                        <th width="190">Aksi</th>
                     </tr>
                 </thead>
 
@@ -145,14 +273,51 @@
 
                     @forelse($bookings as $booking)
 
+                        @php
+                            $status = strtolower($booking->status ?? '');
+
+                            $statusConfig = match ($status) {
+
+                                'menunggu' => [
+                                    'class' => 'bg-warning-subtle text-warning-emphasis',
+                                    'icon' => 'bi-clock',
+                                    'label' => 'Menunggu',
+                                ],
+
+                                'dikonfirmasi' => [
+                                    'class' => 'bg-primary-subtle text-primary',
+                                    'icon' => 'bi-check-circle',
+                                    'label' => 'Dikonfirmasi',
+                                ],
+
+                                'selesai' => [
+                                    'class' => 'bg-success-subtle text-success',
+                                    'icon' => 'bi-check-circle-fill',
+                                    'label' => 'Selesai',
+                                ],
+
+                                'dibatalkan' => [
+                                    'class' => 'bg-danger-subtle text-danger',
+                                    'icon' => 'bi-x-circle',
+                                    'label' => 'Dibatalkan',
+                                ],
+
+                                default => [
+                                    'class' => 'bg-secondary-subtle text-secondary',
+                                    'icon' => 'bi-question-circle',
+                                    'label' => ucfirst($booking->status ?? 'Tidak diketahui'),
+                                ],
+                            };
+                        @endphp
+
                         <tr>
 
-                            {{-- No --}}
-                            <td class="px-4 text-muted">
+                            {{-- NOMOR --}}
+                            <td class="px-3 text-center text-muted">
                                 {{ $bookings->firstItem() + $loop->index }}
                             </td>
 
-                            {{-- Customer --}}
+                            {{-- CUSTOMER --}}
                             <td>
                                 <div class="fw-semibold text-dark">
                                     {{ $booking->customer->nama ?? '-' }}
@@ -163,7 +328,7 @@
                                 </small>
                             </td>
 
-                            {{-- Hewan --}}
+                            {{-- HEWAN --}}
                             <td>
                                 <div class="fw-semibold text-dark">
                                     {{ $booking->pet->nama_pet ?? '-' }}
@@ -174,20 +339,21 @@
                                 </small>
                             </td>
 
-                            {{-- Layanan --}}
+                            {{-- LAYANAN --}}
                             <td>
                                 <div class="fw-semibold text-dark">
                                     {{ $booking->service->nama_service ?? '-' }}
                                 </div>
 
                                 @if($booking->service)
-                                    <small class="text-success fw-semibold">
+                                    <small class="fw-semibold"
+                                           style="color: #ff922b;">
                                         Rp {{ number_format($booking->service->harga, 0, ',', '.') }}
                                     </small>
                                 @endif
                             </td>
 
-                            {{-- Jadwal --}}
+                            {{-- JADWAL --}}
                             <td>
                                 <div class="fw-semibold text-dark">
                                     {{ $booking->tanggal_booking?->format('d/m/Y') ?? '-' }}
@@ -201,120 +367,88 @@
                                 </small>
                             </td>
 
-                            {{-- Status --}}
+                            {{-- STATUS --}}
                             <td>
-                                @php
-                                    $status = strtolower($booking->status ?? '');
-
-                                    $statusConfig = match ($status) {
-                                        'menunggu' => [
-                                            'class' => 'bg-warning-subtle text-warning-emphasis',
-                                            'icon' => 'bi-clock',
-                                            'label' => 'Menunggu',
-                                        ],
-
-                                        'dikonfirmasi' => [
-                                            'class' => 'bg-primary-subtle text-primary',
-                                            'icon' => 'bi-check-circle',
-                                            'label' => 'Dikonfirmasi',
-                                        ],
-
-                                        'selesai' => [
-                                            'class' => 'bg-success-subtle text-success',
-                                            'icon' => 'bi-check-circle-fill',
-                                            'label' => 'Selesai',
-                                        ],
-
-                                        'dibatalkan' => [
-                                            'class' => 'bg-danger-subtle text-danger',
-                                            'icon' => 'bi-x-circle',
-                                            'label' => 'Dibatalkan',
-                                        ],
-
-                                        default => [
-                                            'class' => 'bg-secondary-subtle text-secondary',
-                                            'icon' => 'bi-question-circle',
-                                            'label' => ucfirst($booking->status ?? 'Tidak diketahui'),
-                                        ],
-                                    };
-                                @endphp
-
-                                <span class="badge rounded-pill {{ $statusConfig['class'] }} px-3 py-2">
-                                    <i class="bi {{ $statusConfig['icon'] }} me-1"></i>
+                                <span class="status-badge {{ $statusConfig['class'] }}">
+                                    <i class="bi {{ $statusConfig['icon'] }}"></i>
                                     {{ $statusConfig['label'] }}
                                 </span>
                             </td>
 
-                            {{-- Update Status --}}
+                            {{-- UPDATE STATUS --}}
                             <td>
+
                                 <form
                                     action="{{ route('admin.bookings.status', $booking) }}"
                                     method="POST"
+                                    class="action-form"
                                 >
+
                                     @csrf
                                     @method('PUT')
 
-                                    <div class="input-group">
-                                        <select
-                                            name="status"
-                                            class="form-select form-select-sm"
-                                        >
-                                            <option
-                                                value="Menunggu"
-                                                {{ $booking->status === 'Menunggu' ? 'selected' : '' }}
-                                            >
-                                                Menunggu
-                                            </option>
+                                    <select
+                                        name="status"
+                                        class="form-select form-select-sm"
+                                    >
 
-                                            <option
-                                                value="Dikonfirmasi"
-                                                {{ $booking->status === 'Dikonfirmasi' ? 'selected' : '' }}
-                                            >
-                                                Dikonfirmasi
-                                            </option>
+                                        <option value="Menunggu"
+                                            {{ $booking->status === 'Menunggu' ? 'selected' : '' }}>
+                                            Menunggu
+                                        </option>
 
-                                            <option
-                                                value="Selesai"
-                                                {{ $booking->status === 'Selesai' ? 'selected' : '' }}
-                                            >
-                                                Selesai
-                                            </option>
+                                        <option value="Dikonfirmasi"
+                                            {{ $booking->status === 'Dikonfirmasi' ? 'selected' : '' }}>
+                                            Dikonfirmasi
+                                        </option>
 
-                                            <option
-                                                value="Dibatalkan"
-                                                {{ $booking->status === 'Dibatalkan' ? 'selected' : '' }}
-                                            >
-                                                Dibatalkan
-                                            </option>
-                                        </select>
+                                        <option value="Selesai"
+                                            {{ $booking->status === 'Selesai' ? 'selected' : '' }}>
+                                            Selesai
+                                        </option>
 
-                                        <button
-                                            type="submit"
-                                            class="btn btn-primary btn-sm"
-                                            title="Simpan perubahan"
-                                        >
-                                            <i class="bi bi-check-lg"></i>
-                                        </button>
-                                    </div>
+                                        <option value="Dibatalkan"
+                                            {{ $booking->status === 'Dibatalkan' ? 'selected' : '' }}>
+                                            Dibatalkan
+                                        </option>
+
+                                    </select>
+
+                                    <button
+                                        type="submit"
+                                        class="btn btn-sm btn-outline-orange"
+                                        title="Simpan perubahan"
+                                    >
+                                        <i class="bi bi-check-lg"></i>
+                                    </button>
+
                                 </form>
+
                             </td>
 
                         </tr>
 
                     @empty
 
+                        {{-- DATA KOSONG --}}
                         <tr>
                             <td colspan="7" class="text-center py-5">
 
-                                <i class="bi bi-calendar-x fs-1 text-muted"></i>
+                                <div class="d-flex flex-column align-items-center">
 
-                                <p class="fw-semibold mt-3 mb-1">
-                                    Belum ada booking
-                                </p>
+                                    <div class="empty-icon mb-3">
+                                        <i class="bi bi-calendar-x"></i>
+                                    </div>
 
-                                <p class="text-muted small mb-0">
-                                    Booking customer akan muncul di sini.
-                                </p>
+                                    <p class="fw-semibold mb-1">
+                                        Booking tidak ditemukan.
+                                    </p>
+
+                                    <p class="text-muted small mb-0">
+                                        Belum ada booking atau coba ubah kata kunci pencarian.
+                                    </p>
+
+                                </div>
 
                             </td>
                         </tr>
@@ -327,10 +461,12 @@
 
         </div>
 
-        {{-- Pagination --}}
+        {{-- PAGINATION --}}
         @if($bookings->hasPages())
-            <div class="card-footer bg-white border-0 p-3">
-                {{ $bookings->links('pagination::bootstrap-5') }}
+            <div class="d-flex justify-content-end mt-4">
+
+                {{ $bookings->onEachSide(1)->withQueryString()->links('pagination::bootstrap-5') }}
+
             </div>
         @endif
 

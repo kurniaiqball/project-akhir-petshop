@@ -1,30 +1,53 @@
 
 @extends('layouts.admin')
 
-@section('title', 'Edit Hewan - PetCare')
+@section('title', 'Edit Hewan - Galaxy Petshop')
+
+@section('page-title', 'Edit Hewan')
+
+@section('page-description')
+    Perbarui informasi dan foto hewan peliharaan.
+@endsection
 
 @section('content')
 
-<div class="container-fluid py-4">
+<div class="container-fluid py-3">
 
-    {{-- Header Halaman --}}
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    {{-- HEADER --}}
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
         <div>
-            <h2 class="fw-bold mb-1">Edit Hewan</h2>
+            <h4 class="fw-bold mb-1">Edit Hewan</h4>
             <p class="text-muted mb-0">
-                Perbarui informasi dan foto hewan peliharaan.
+                Perbarui informasi hewan peliharaan pelanggan.
             </p>
         </div>
 
         <a href="{{ route('admin.pets.index') }}"
-           class="btn btn-outline-secondary">
+           class="btn btn-outline-secondary rounded-3 px-3">
             <i class="bi bi-arrow-left me-1"></i>
             Kembali
         </a>
     </div>
 
-    {{-- Form Edit Hewan --}}
-    <div class="card border-0 shadow-sm">
+    {{-- ALERT ERROR --}}
+    @if ($errors->any())
+        <div class="alert alert-danger alert-dismissible fade show rounded-3" role="alert">
+            <i class="bi bi-exclamation-circle me-2"></i>
+            Terdapat kesalahan pada pengisian form. Silakan periksa kembali.
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @endif
+
+    {{-- CARD FORM --}}
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+
+        <div class="card-header bg-white border-0 px-4 pt-4">
+            <h5 class="fw-bold mb-1">Informasi Hewan</h5>
+            <small class="text-muted">
+                Lengkapi informasi hewan dengan benar.
+            </small>
+        </div>
+
         <div class="card-body p-4">
 
             <form action="{{ route('admin.pets.update', $pet->id_pet) }}"
@@ -34,9 +57,9 @@
                 @csrf
                 @method('PUT')
 
-                <div class="row g-3">
+                <div class="row g-4">
 
-                    {{-- Customer --}}
+                    {{-- CUSTOMER --}}
                     <div class="col-md-6">
                         <label for="id_customer" class="form-label fw-semibold">
                             Pemilik Hewan <span class="text-danger">*</span>
@@ -44,7 +67,7 @@
 
                         <select name="id_customer"
                                 id="id_customer"
-                                class="form-select @error('id_customer') is-invalid @enderror"
+                                class="form-select rounded-3 @error('id_customer') is-invalid @enderror"
                                 required>
 
                             <option value="">-- Pilih Customer --</option>
@@ -63,7 +86,7 @@
                         @enderror
                     </div>
 
-                    {{-- Nama Hewan --}}
+                    {{-- NAMA HEWAN --}}
                     <div class="col-md-6">
                         <label for="nama_pet" class="form-label fw-semibold">
                             Nama Hewan <span class="text-danger">*</span>
@@ -72,9 +95,10 @@
                         <input type="text"
                                name="nama_pet"
                                id="nama_pet"
-                               class="form-control @error('nama_pet') is-invalid @enderror"
+                               class="form-control rounded-3 @error('nama_pet') is-invalid @enderror"
                                value="{{ old('nama_pet', $pet->nama_pet) }}"
                                maxlength="100"
+                               placeholder="Masukkan nama hewan"
                                required>
 
                         @error('nama_pet')
@@ -82,28 +106,26 @@
                         @enderror
                     </div>
 
-                 
-{{-- Jenis Hewan --}}
-<div class="col-md-6">
-    <label for="jenis" class="form-label fw-semibold">
-        Jenis Hewan <span class="text-danger">*</span>
-    </label>
+                    {{-- JENIS --}}
+                    <div class="col-md-6">
+                        <label for="jenis" class="form-label fw-semibold">
+                            Jenis Hewan <span class="text-danger">*</span>
+                        </label>
 
-    <input type="text"
-           name="jenis"
-           id="jenis"
-           class="form-control @error('jenis') is-invalid @enderror"
-           value="{{ old('jenis', $pet->jenis) }}"
-           placeholder="Contoh: Kucing"
-           required>
+                        <input type="text"
+                               name="jenis"
+                               id="jenis"
+                               class="form-control rounded-3 @error('jenis') is-invalid @enderror"
+                               value="{{ old('jenis', $pet->jenis) }}"
+                               placeholder="Contoh: Kucing"
+                               required>
 
-    @error('jenis')
-        <div class="invalid-feedback">{{ $message }}</div>
-    @enderror
-</div>
+                        @error('jenis')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
 
-
-                    {{-- Ras --}}
+                    {{-- RAS --}}
                     <div class="col-md-6">
                         <label for="ras" class="form-label fw-semibold">
                             Ras
@@ -112,7 +134,7 @@
                         <input type="text"
                                name="ras"
                                id="ras"
-                               class="form-control @error('ras') is-invalid @enderror"
+                               class="form-control rounded-3 @error('ras') is-invalid @enderror"
                                value="{{ old('ras', $pet->ras) }}"
                                maxlength="100"
                                placeholder="Contoh: Persia">
@@ -122,7 +144,7 @@
                         @enderror
                     </div>
 
-                    {{-- Jenis Kelamin --}}
+                    {{-- JENIS KELAMIN --}}
                     <div class="col-md-6">
                         <label for="jenis_kelamin" class="form-label fw-semibold">
                             Jenis Kelamin <span class="text-danger">*</span>
@@ -130,7 +152,7 @@
 
                         <select name="jenis_kelamin"
                                 id="jenis_kelamin"
-                                class="form-select @error('jenis_kelamin') is-invalid @enderror"
+                                class="form-select rounded-3 @error('jenis_kelamin') is-invalid @enderror"
                                 required>
 
                             <option value="">-- Pilih Jenis Kelamin --</option>
@@ -152,7 +174,7 @@
                         @enderror
                     </div>
 
-                    {{-- Umur Tahun --}}
+                    {{-- UMUR TAHUN --}}
                     <div class="col-md-3">
                         <label for="umur_tahun" class="form-label fw-semibold">
                             Umur (Tahun)
@@ -161,7 +183,7 @@
                         <input type="number"
                                name="umur_tahun"
                                id="umur_tahun"
-                               class="form-control @error('umur_tahun') is-invalid @enderror"
+                               class="form-control rounded-3 @error('umur_tahun') is-invalid @enderror"
                                value="{{ old('umur_tahun', $pet->umur_tahun) }}"
                                min="0"
                                placeholder="0">
@@ -171,7 +193,7 @@
                         @enderror
                     </div>
 
-                    {{-- Umur Bulan --}}
+                    {{-- UMUR BULAN --}}
                     <div class="col-md-3">
                         <label for="umur_bulan" class="form-label fw-semibold">
                             Umur (Bulan)
@@ -180,7 +202,7 @@
                         <input type="number"
                                name="umur_bulan"
                                id="umur_bulan"
-                               class="form-control @error('umur_bulan') is-invalid @enderror"
+                               class="form-control rounded-3 @error('umur_bulan') is-invalid @enderror"
                                value="{{ old('umur_bulan', $pet->umur_bulan) }}"
                                min="0"
                                max="11"
@@ -191,87 +213,95 @@
                         @enderror
                     </div>
 
-                    {{-- Foto Hewan --}}
-                    <div class="col-md-6">
-                        <label for="foto" class="form-label fw-semibold">
+                    {{-- FOTO HEWAN --}}
+                    <div class="col-12">
+                        <label class="form-label fw-semibold">
                             Foto Hewan
                         </label>
 
-                        {{-- Foto Saat Ini --}}
-                        @if ($pet->foto && \Illuminate\Support\Facades\Storage::disk('public')->exists($pet->foto))
-                            <div class="mb-3">
-                                <p class="text-muted small mb-2">
-                                    Foto saat ini:
+                        <div class="border rounded-4 p-3 bg-light">
+
+                            {{-- FOTO LAMA --}}
+                            @if ($pet->foto && \Illuminate\Support\Facades\Storage::disk('public')->exists($pet->foto))
+
+                                <div class="mb-3">
+                                    <p class="small fw-semibold text-muted mb-2">
+                                        Foto Saat Ini
+                                    </p>
+
+                                    <img src="{{ asset('storage/' . $pet->foto) }}"
+                                         alt="Foto {{ $pet->nama_pet }}"
+                                         width="140"
+                                         height="140"
+                                         class="rounded-4 object-fit-cover shadow-sm">
+                                </div>
+
+                                <div class="form-check mb-3">
+                                    <input type="checkbox"
+                                           name="hapus_foto"
+                                           id="hapus_foto"
+                                           value="1"
+                                           class="form-check-input">
+
+                                    <label for="hapus_foto"
+                                           class="form-check-label text-danger">
+                                        Hapus foto saat ini
+                                    </label>
+                                </div>
+
+                            @else
+
+                                <div class="text-muted mb-3">
+                                    <i class="bi bi-camera fs-1"></i>
+                                    <p class="small mb-0">Belum ada foto hewan.</p>
+                                </div>
+
+                            @endif
+
+                            {{-- UPLOAD FOTO BARU --}}
+                            <input type="file"
+                                   name="foto"
+                                   id="foto"
+                                   class="form-control rounded-3 @error('foto') is-invalid @enderror"
+                                   accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp">
+
+                            @error('foto')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+
+                            <small class="text-muted d-block mt-2">
+                                Format JPG, JPEG, PNG, atau WEBP. Maksimal 2 MB.
+                            </small>
+
+                            {{-- PREVIEW FOTO BARU --}}
+                            <div id="preview-container" class="mt-3 d-none">
+
+                                <p class="small fw-semibold text-muted mb-2">
+                                    Pratinjau Foto Baru
                                 </p>
 
-                                <img src="{{ asset('storage/' . $pet->foto) }}"
-                                     alt="Foto {{ $pet->nama_pet }}"
-                                     width="150"
-                                     height="150"
-                                     class="img-thumbnail object-fit-cover">
+                                <img id="preview-foto"
+                                     src=""
+                                     alt="Pratinjau foto baru"
+                                     width="140"
+                                     height="140"
+                                     class="rounded-4 object-fit-cover shadow-sm">
+
+                                <div>
+                                    <button type="button"
+                                            id="batal-foto"
+                                            class="btn btn-sm btn-outline-danger rounded-3 mt-2">
+                                        <i class="bi bi-x-circle me-1"></i>
+                                        Batal Pilih Foto
+                                    </button>
+                                </div>
+
                             </div>
 
-                            <div class="form-check mb-3">
-                                <input type="checkbox"
-                                       name="hapus_foto"
-                                       id="hapus_foto"
-                                       value="1"
-                                       class="form-check-input">
-
-                                <label for="hapus_foto" class="form-check-label text-danger">
-                                    Hapus foto saat ini
-                                </label>
-                            </div>
-                        @else
-                            <div class="mb-3 text-muted">
-                                <i class="bi bi-camera fs-1"></i>
-                                <p class="small mb-0">
-                                    Belum ada foto hewan.
-                                </p>
-                            </div>
-                        @endif
-
-                        {{-- Upload Foto Baru --}}
-                        <input type="file"
-                               name="foto"
-                               id="foto"
-                               class="form-control @error('foto') is-invalid @enderror"
-                               accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp">
-
-                        @error('foto')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-
-                        <small class="text-muted d-block mt-1">
-                            Pilih foto baru untuk mengganti foto saat ini.
-                            Format JPG, JPEG, PNG, atau WEBP. Maksimal 2 MB.
-                        </small>
-
-                        {{-- Preview Foto Baru --}}
-                        <div id="preview-container" class="mt-3 d-none">
-                            <p class="text-muted small mb-2">
-                                Pratinjau foto baru:
-                            </p>
-
-                            <img id="preview-foto"
-                                 src=""
-                                 alt="Pratinjau foto baru"
-                                 width="150"
-                                 height="150"
-                                 class="img-thumbnail object-fit-cover">
-
-                            <div>
-                                <button type="button"
-                                        id="batal-foto"
-                                        class="btn btn-sm btn-outline-danger mt-2">
-                                    <i class="bi bi-x-circle me-1"></i>
-                                    Batal Pilih Foto
-                                </button>
-                            </div>
                         </div>
                     </div>
 
-                    {{-- Catatan --}}
+                    {{-- CATATAN --}}
                     <div class="col-12">
                         <label for="catatan" class="form-label fw-semibold">
                             Catatan
@@ -280,8 +310,8 @@
                         <textarea name="catatan"
                                   id="catatan"
                                   rows="4"
-                                  class="form-control @error('catatan') is-invalid @enderror"
-                                  placeholder="Masukkan catatan tambahan">{{ old('catatan', $pet->catatan) }}</textarea>
+                                  class="form-control rounded-3 @error('catatan') is-invalid @enderror"
+                                  placeholder="Masukkan catatan tambahan tentang hewan">{{ old('catatan', $pet->catatan) }}</textarea>
 
                         @error('catatan')
                             <div class="invalid-feedback">{{ $message }}</div>
@@ -290,15 +320,16 @@
 
                 </div>
 
-                {{-- Tombol --}}
-                <div class="d-flex justify-content-end gap-2 mt-4">
+                {{-- TOMBOL --}}
+                <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
 
                     <a href="{{ route('admin.pets.index') }}"
-                       class="btn btn-light border">
+                       class="btn btn-light border rounded-3 px-4">
                         Batal
                     </a>
 
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit"
+                            class="btn btn-orange rounded-3 px-4">
                         <i class="bi bi-save me-1"></i>
                         Simpan Perubahan
                     </button>
@@ -306,12 +337,13 @@
                 </div>
 
             </form>
+
         </div>
     </div>
 
 </div>
 
-{{-- Preview Foto --}}
+{{-- PREVIEW FOTO --}}
 <script>
 document.addEventListener('DOMContentLoaded', function () {
 
@@ -346,27 +378,23 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (!formatDiizinkan.includes(file.type)) {
             alert('Format foto harus JPG, JPEG, PNG, atau WEBP.');
-
             this.value = '';
             previewContainer.classList.add('d-none');
             previewFoto.removeAttribute('src');
-
             return;
         }
 
         if (file.size > 2 * 1024 * 1024) {
             alert('Ukuran foto maksimal 2 MB.');
-
             this.value = '';
             previewContainer.classList.add('d-none');
             previewFoto.removeAttribute('src');
-
             return;
         }
 
         previewUrl = URL.createObjectURL(file);
-        previewFoto.src = previewUrl;
 
+        previewFoto.src = previewUrl;
         previewContainer.classList.remove('d-none');
 
         // Jika memilih foto baru, batalkan pilihan hapus foto lama.

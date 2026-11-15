@@ -1,40 +1,95 @@
 
 @extends('layouts.admin')
 
+@section('title', 'Customer - Galaxy Petshop')
+
+@section('page-title', 'Customer')
+
+@section('page-description')
+    Kelola data customer Galaxy Petshop.
+@endsection
+
 @section('content')
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <div>
-        <h2 class="fw-bold mb-1">Customer</h2>
-        <p class="text-muted mb-0">
-            Kelola data customer PetCare.
-        </p>
-    </div>
-</div>
+@push('styles')
+<style>
+    .customer-card {
+        border: none;
+        border-radius: 15px;
+    }
 
+    .btn-orange {
+        background-color: #ff922b;
+        border-color: #ff922b;
+        color: white;
+    }
+
+    .btn-orange:hover {
+        background-color: #f07812;
+        border-color: #f07812;
+        color: white;
+    }
+
+    .table thead th {
+        background-color: #fff3e6;
+        color: #754016;
+        border-bottom: 2px solid #ff922b;
+    }
+
+    .table tbody tr:hover {
+        background-color: #fffaf5;
+    }
+
+    .form-control:focus {
+        border-color: #ff922b;
+        box-shadow: 0 0 0 0.2rem rgba(255,146,43,.15);
+    }
+
+    .customer-avatar {
+        width: 44px;
+        height: 44px;
+        object-fit: cover;
+        border: 2px solid #ffe0bd;
+    }
+
+    .btn {
+        border-radius: 9px;
+    }
+</style>
+@endpush
+
+{{-- NOTIFIKASI SUCCESS --}}
 @if(session('success'))
-    <div class="alert alert-success">
+    <div class="alert alert-success alert-dismissible fade show">
         <i class="bi bi-check-circle me-2"></i>
         {{ session('success') }}
+
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
 @endif
 
+{{-- NOTIFIKASI ERROR --}}
 @if(session('error'))
-    <div class="alert alert-danger">
+    <div class="alert alert-danger alert-dismissible fade show">
         <i class="bi bi-exclamation-circle me-2"></i>
         {{ session('error') }}
+
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
 @endif
 
-<div class="card border-0 shadow-sm">
-    <div class="card-body">
+{{-- CARD CUSTOMER --}}
+<div class="card customer-card shadow-sm">
 
-        {{-- Search --}}
+    <div class="card-body p-3 p-md-4">
+
+        {{-- SEARCH --}}
         <form
             action="{{ route('admin.customers.index') }}"
             method="GET"
             class="row g-2 mb-4"
         >
+
             <div class="col-md-6">
                 <input
                     type="text"
@@ -46,10 +101,7 @@
             </div>
 
             <div class="col-auto">
-                <button
-                    type="submit"
-                    class="btn btn-primary"
-                >
+                <button type="submit" class="btn btn-orange">
                     <i class="bi bi-search me-1"></i>
                     Cari
                 </button>
@@ -61,51 +113,65 @@
                         href="{{ route('admin.customers.index') }}"
                         class="btn btn-outline-secondary"
                     >
+                        <i class="bi bi-arrow-counterclockwise me-1"></i>
                         Reset
                     </a>
                 </div>
             @endif
+
         </form>
 
-        {{-- Table --}}
+        {{-- TABLE --}}
         <div class="table-responsive">
-            <table class="table table-hover align-middle">
 
-                <thead class="table-light">
+            <table class="table table-hover align-middle mb-0">
+
+                <thead>
                     <tr>
-                        <th width="70">No</th>
+                        <th width="70" class="px-3">No</th>
                         <th>Customer</th>
                         <th>Email</th>
                         <th>No. HP</th>
-                        <th width="150">Aksi</th>
+                        <th width="120" class="text-center">Aksi</th>
                     </tr>
                 </thead>
 
                 <tbody>
+
                     @forelse($customers as $customer)
+
                         <tr>
-                            <td>
+
+                            {{-- NOMOR --}}
+                            <td class="px-3 text-muted">
                                 {{ $customers->firstItem() + $loop->index }}
                             </td>
 
+                            {{-- CUSTOMER --}}
                             <td>
                                 <div class="d-flex align-items-center">
 
                                     @if($customer->foto)
+
                                         <img
                                             src="{{ asset('storage/' . $customer->foto) }}"
                                             alt="Foto {{ $customer->nama }}"
-                                            width="42"
-                                            height="42"
-                                            class="rounded-circle me-3 object-fit-cover"
+                                            class="customer-avatar rounded-circle me-3"
                                         >
+
                                     @else
-                                        <div class="bg-success-subtle text-success rounded-circle d-flex align-items-center justify-content-center me-3 p-2">
-                                            <i class="bi bi-person"></i>
+
+                                        <div
+                                            class="rounded-circle d-flex align-items-center justify-content-center me-3"
+                                            style="width:44px;height:44px;background:#fff0df;color:#ff922b;"
+                                        >
+                                            <i class="bi bi-person fs-5"></i>
                                         </div>
+
                                     @endif
 
                                     <div>
+
                                         <div class="fw-semibold">
                                             {{ $customer->nama }}
                                         </div>
@@ -115,29 +181,36 @@
                                                 {{ '@' . $customer->user->username }}
                                             </small>
                                         @endif
+
                                     </div>
 
                                 </div>
                             </td>
 
+                            {{-- EMAIL --}}
                             <td>
                                 {{ $customer->email }}
                             </td>
 
+                            {{-- NO HP --}}
                             <td>
                                 {{ $customer->no_hp ?? '-' }}
                             </td>
 
+                            {{-- AKSI --}}
                             <td>
-                                <div class="d-flex gap-2">
+                                <div class="d-flex gap-2 justify-content-center">
+
+                                    {{-- DETAIL --}}
                                     <a
                                         href="{{ route('admin.customers.show', $customer) }}"
-                                        class="btn btn-sm btn-outline-primary"
-                                        title="Detail"
+                                        class="btn btn-sm btn-outline-warning"
+                                        title="Detail Customer"
                                     >
                                         <i class="bi bi-eye"></i>
                                     </a>
 
+                                    {{-- HAPUS --}}
                                     <form
                                         action="{{ route('admin.customers.destroy', $customer) }}"
                                         method="POST"
@@ -150,37 +223,54 @@
                                         <button
                                             type="submit"
                                             class="btn btn-sm btn-outline-danger"
-                                            title="Hapus"
+                                            title="Hapus Customer"
                                         >
                                             <i class="bi bi-trash"></i>
                                         </button>
+
                                     </form>
+
                                 </div>
                             </td>
+
                         </tr>
 
                     @empty
+
                         <tr>
                             <td colspan="5" class="text-center py-5">
-                                <i class="bi bi-people fs-1 text-muted"></i>
 
-                                <div class="mt-2 text-muted">
+                                <i class="bi bi-people fs-1 d-block mb-2"
+                                   style="color:#ff922b;"></i>
+
+                                <div class="fw-semibold text-muted">
                                     Belum ada data customer.
                                 </div>
+
+                                <small class="text-muted">
+                                    Data customer yang terdaftar akan muncul di sini.
+                                </small>
+
                             </td>
                         </tr>
+
                     @endforelse
+
                 </tbody>
 
             </table>
+
         </div>
 
-        {{-- Pagination --}}
+        {{-- PAGINATION --}}
         <div class="d-flex justify-content-end mt-4">
+
             {{ $customers->onEachSide(1)->links('pagination::bootstrap-5') }}
+
         </div>
 
     </div>
+
 </div>
 
 @endsection

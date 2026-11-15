@@ -1,60 +1,53 @@
 
 @extends('layouts.admin')
 
-@section('title', 'Produk - PetCare')
+@section('title', 'Produk - Galaxy Petshop')
 
 @section('page-title', 'Produk')
 
 @section('page-description')
-    Kelola produk yang tersedia di PetCare.
+    Kelola produk yang tersedia di Galaxy Petshop.
 @endsection
 
 @section('content')
 
 {{-- ALERT SUCCESS --}}
 @if (session('success'))
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
+    <div class="alert alert-success alert-dismissible fade show rounded-3" role="alert">
         <i class="bi bi-check-circle me-2"></i>
         {{ session('success') }}
 
-        <button
-            type="button"
-            class="btn-close"
-            data-bs-dismiss="alert"
-        ></button>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
 @endif
 
 {{-- ALERT ERROR --}}
 @if (session('error'))
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <div class="alert alert-danger alert-dismissible fade show rounded-3" role="alert">
         <i class="bi bi-exclamation-circle me-2"></i>
         {{ session('error') }}
 
-        <button
-            type="button"
-            class="btn-close"
-            data-bs-dismiss="alert"
-        ></button>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
 @endif
 
-{{-- CARD PRODUK --}}
-<div class="card shadow-sm border-0">
 
-    <div class="card-body">
+{{-- CARD PRODUK --}}
+<div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+
+    <div class="card-body p-4">
 
         {{-- TOOLBAR --}}
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
 
-            {{-- FORM PENCARIAN DAN FILTER --}}
+            {{-- SEARCH DAN FILTER --}}
             <form
                 action="{{ route('admin.products.index') }}"
                 method="GET"
                 class="d-flex align-items-center gap-2 flex-wrap"
             >
 
-                {{-- SEARCH PRODUK --}}
+                {{-- SEARCH --}}
                 <div style="width: 230px;">
                     <input
                         type="text"
@@ -65,7 +58,7 @@
                     >
                 </div>
 
-                {{-- DROPDOWN KATEGORI --}}
+                {{-- FILTER KATEGORI --}}
                 <div style="width: 165px;">
                     <select
                         name="category"
@@ -89,13 +82,13 @@
                 {{-- TOMBOL CARI --}}
                 <button
                     type="submit"
-                    class="btn btn-primary"
+                    class="btn btn-orange"
                     title="Cari produk"
                 >
                     <i class="bi bi-search"></i>
                 </button>
 
-                {{-- RESET FILTER --}}
+                {{-- RESET --}}
                 @if (request()->filled('search') || request()->filled('category'))
                     <a
                         href="{{ route('admin.products.index') }}"
@@ -111,7 +104,7 @@
             {{-- TAMBAH PRODUK --}}
             <a
                 href="{{ route('admin.products.create') }}"
-                class="btn btn-primary"
+                class="btn btn-orange px-3"
             >
                 <i class="bi bi-plus-lg me-1"></i>
                 Tambah Produk
@@ -125,30 +118,30 @@
 
             <table class="table table-hover align-middle mb-0">
 
-                <thead class="table-light">
+                <thead style="background-color: #fff2e6;">
                     <tr>
 
-                        <th class="px-3" width="60">
+                        <th class="px-3 py-3 text-secondary small" width="60">
                             No
                         </th>
 
-                        <th>
+                        <th class="py-3 text-secondary small">
                             Produk
                         </th>
 
-                        <th>
+                        <th class="py-3 text-secondary small">
                             Kategori
                         </th>
 
-                        <th>
+                        <th class="py-3 text-secondary small">
                             Harga
                         </th>
 
-                        <th>
+                        <th class="py-3 text-secondary small">
                             Stok
                         </th>
 
-                        <th width="140" class="text-center">
+                        <th width="140" class="text-center py-3 text-secondary small">
                             Aksi
                         </th>
 
@@ -166,6 +159,7 @@
                                 {{ $products->firstItem() + $loop->index }}
                             </td>
 
+
                             {{-- PRODUK --}}
                             <td>
 
@@ -178,23 +172,23 @@
                                             alt="{{ $product->nama_product }}"
                                             width="48"
                                             height="48"
-                                            class="rounded me-3 object-fit-cover"
+                                            class="rounded-3 me-3 object-fit-cover"
                                         >
 
                                     @else
 
                                         <div
-                                            class="bg-light rounded d-flex align-items-center justify-content-center me-3"
+                                            class="bg-orange-soft rounded-3 d-flex align-items-center justify-content-center me-3"
                                             style="width: 48px; height: 48px;"
                                         >
-                                            <i class="bi bi-box text-secondary"></i>
+                                            <i class="bi bi-box-seam text-orange fs-5"></i>
                                         </div>
 
                                     @endif
 
                                     <div>
 
-                                        <div class="fw-semibold">
+                                        <div class="fw-semibold text-dark">
                                             {{ $product->nama_product }}
                                         </div>
 
@@ -208,38 +202,44 @@
 
                             </td>
 
+
                             {{-- KATEGORI --}}
                             <td>
 
-                                <span class="badge bg-light text-dark border">
+                                <span class="badge rounded-pill bg-orange-soft text-orange px-3 py-2">
                                     {{ $product->category->nama_category ?? '-' }}
                                 </span>
 
                             </td>
 
+
                             {{-- HARGA --}}
-                            <td class="fw-semibold text-nowrap">
+                            <td class="fw-bold text-orange text-nowrap">
                                 Rp {{ number_format($product->harga, 0, ',', '.') }}
                             </td>
+
 
                             {{-- STOK --}}
                             <td>
 
                                 @if ($product->stok > 0)
 
-                                    <span class="badge bg-success">
+                                    <span class="badge rounded-pill text-white px-3 py-2" style="background-color:orange;">
+                                        <i class="bi bi-check-circle me-1"></i>
                                         {{ $product->stok }}
                                     </span>
 
                                 @else
 
-                                    <span class="badge bg-danger">
+                                    <span class="badge rounded-pill bg-danger-subtle text-danger px-3 py-2">
+                                        <i class="bi bi-x-circle me-1"></i>
                                         Habis
                                     </span>
 
                                 @endif
 
                             </td>
+
 
                             {{-- AKSI --}}
                             <td>
@@ -249,7 +249,7 @@
                                     {{-- DETAIL --}}
                                     <a
                                         href="{{ route('admin.products.show', $product) }}"
-                                        class="btn btn-sm btn-outline-primary"
+                                        class="btn btn-sm btn-outline-orange"
                                         title="Detail"
                                     >
                                         <i class="bi bi-eye"></i>
@@ -299,10 +299,16 @@
 
                                 <div class="text-muted">
 
-                                    <i class="bi bi-box-seam fs-1 d-block mb-2"></i>
+                                    <div class="feature-icon mx-auto mb-3">
+                                        <i class="bi bi-box-seam"></i>
+                                    </div>
 
-                                    <p class="mb-0">
+                                    <p class="fw-semibold mb-1">
                                         Produk tidak ditemukan.
+                                    </p>
+
+                                    <p class="small mb-0">
+                                        Coba ubah kata kunci atau filter kategori.
                                     </p>
 
                                 </div>
@@ -323,7 +329,7 @@
         {{-- PAGINATION --}}
         @if ($products->hasPages())
 
-            <div class="card-footer bg-white mt-3 border-0">
+            <div class="mt-4">
                 {{ $products->withQueryString()->links('pagination::bootstrap-5') }}
             </div>
 
