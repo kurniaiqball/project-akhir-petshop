@@ -1,35 +1,37 @@
+
 @extends('layouts.admin')
+
+@section('title', 'Detail Layanan - Galaxy Petshop')
+
+@section('page-title', 'Detail Layanan')
+
+@section('page-description')
+    Informasi lengkap layanan grooming dan perawatan hewan.
+@endsection
 
 @section('content')
 
 <div class="mb-4">
 
-    <a
-        href="{{ route('admin.services.index') }}"
-        class="text-decoration-none text-muted"
-    >
+    <a href="{{ route('admin.services.index') }}"
+       class="text-decoration-none text-muted">
         <i class="bi bi-arrow-left me-1"></i>
         Kembali ke Layanan
     </a>
 
-    <div class="d-flex justify-content-between align-items-center mt-3">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mt-3">
 
         <div>
-            <h2 class="fw-bold mb-1">
-                Detail Layanan
-            </h2>
-
+            <h4 class="fw-bold mb-1">Detail Layanan</h4>
             <p class="text-muted mb-0">
-                Informasi lengkap layanan.
+                Informasi lengkap layanan Galaxy Petshop.
             </p>
         </div>
 
-        <a
-            href="{{ route('admin.services.edit', $service) }}"
-            class="btn btn-warning"
-        >
+        <a href="{{ route('admin.services.edit', $service) }}"
+           class="btn btn-orange">
             <i class="bi bi-pencil me-1"></i>
-            Edit
+            Edit Layanan
         </a>
 
     </div>
@@ -38,66 +40,72 @@
 
 <div class="row g-4">
 
+    {{-- INFORMASI LAYANAN --}}
     <div class="col-lg-5">
 
-        <div class="card border-0 shadow-sm h-100">
+        <div class="card border-0 shadow-sm rounded-4 h-100">
 
             <div class="card-body p-4">
 
+                {{-- FOTO DAN NAMA LAYANAN --}}
                 <div class="text-center mb-4">
 
-                    <div
-                        class="rounded-circle bg-success-subtle d-inline-flex align-items-center justify-content-center"
-                        style="width: 90px; height: 90px;"
-                    >
-                        <i
-                            class="bi bi-scissors text-success"
-                            style="font-size: 40px;"
-                        ></i>
-                    </div>
+                    @if($service->foto)
 
-                    <h4 class="fw-bold mt-3 mb-1">
+                        <img
+                            src="{{ asset('storage/' . $service->foto) }}"
+                            alt="{{ $service->nama_service }}"
+                            class="img-fluid rounded-4 mb-3"
+                            style="width: 100%; max-height: 260px; object-fit: cover;"
+                        >
+
+                    @else
+
+                        <div class="bg-orange-soft rounded-4 d-inline-flex align-items-center justify-content-center mb-3"
+                             style="width: 110px; height: 110px;">
+                            <i class="bi bi-scissors text-orange"
+                               style="font-size: 45px;"></i>
+                        </div>
+
+                    @endif
+
+                    <h4 class="fw-bold mb-1">
                         {{ $service->nama_service }}
                     </h4>
 
                     <p class="text-muted mb-0">
-                        Layanan Grooming
+                        Layanan Grooming dan Perawatan Hewan
                     </p>
 
                 </div>
 
-                <div class="border-top pt-3">
+                <hr class="text-muted">
 
-                    <div class="d-flex justify-content-between mb-3">
+                {{-- HARGA --}}
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="text-muted">Harga</span>
 
-                        <span class="text-muted">
-                            Harga
-                        </span>
-
-                        <strong class="text-success">
-                            Rp {{ number_format($service->harga, 0, ',', '.') }}
-                        </strong>
-
-                    </div>
-
-                    <div class="d-flex justify-content-between mb-3">
-
-                        <span class="text-muted">
-                            Durasi
-                        </span>
-
-                        <span class="badge bg-primary-subtle text-primary">
-                            {{ $service->durasi }} menit
-                        </span>
-
-                    </div>
-
+                    <strong class="text-orange">
+                        Rp {{ number_format($service->harga, 0, ',', '.') }}
+                    </strong>
                 </div>
 
-                <div class="mt-4">
+                {{-- DURASI --}}
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="text-muted">Durasi</span>
 
-                    <h6 class="fw-bold">
-                        Deskripsi
+                    <span class="badge bg-orange-soft text-orange rounded-pill px-3 py-2">
+                        {{ $service->durasi }} menit
+                    </span>
+                </div>
+
+                <hr class="text-muted">
+
+                {{-- DESKRIPSI --}}
+                <div class="mt-3">
+
+                    <h6 class="fw-bold mb-2">
+                        Deskripsi Layanan
                     </h6>
 
                     @if($service->deskripsi)
@@ -108,8 +116,8 @@
 
                     @else
 
-                        <p class="text-muted mb-0">
-                            Tidak ada deskripsi.
+                        <p class="text-muted fst-italic mb-0">
+                            Belum ada deskripsi untuk layanan ini.
                         </p>
 
                     @endif
@@ -122,13 +130,14 @@
 
     </div>
 
+    {{-- RIWAYAT BOOKING --}}
     <div class="col-lg-7">
 
-        <div class="card border-0 shadow-sm">
+        <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
 
             <div class="card-body p-4">
 
-                <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
 
                     <div>
                         <h5 class="fw-bold mb-1">
@@ -136,11 +145,11 @@
                         </h5>
 
                         <small class="text-muted">
-                            Booking yang menggunakan layanan ini
+                            Daftar booking yang menggunakan layanan ini.
                         </small>
                     </div>
 
-                    <span class="badge bg-success">
+                    <span class="badge bg-orange-soft text-orange rounded-pill px-3 py-2">
                         {{ $service->bookings->count() }} Booking
                     </span>
 
@@ -150,17 +159,15 @@
 
                     <div class="table-responsive">
 
-                        <table class="table table-hover align-middle">
+                        <table class="table table-hover align-middle mb-0">
 
-                            <thead class="table-light">
-
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Tanggal</th>
-                                    <th>Jam</th>
-                                    <th>Status</th>
+                            <thead>
+                                <tr style="background-color: #fff2e6;">
+                                    <th class="py-3">ID Booking</th>
+                                    <th class="py-3">Tanggal</th>
+                                    <th class="py-3">Jam</th>
+                                    <th class="py-3">Status</th>
                                 </tr>
-
                             </thead>
 
                             <tbody>
@@ -169,16 +176,16 @@
 
                                     <tr>
 
-                                        <td>
+                                        <td class="fw-semibold">
                                             #{{ $booking->id_booking }}
                                         </td>
 
                                         <td>
-                                            {{ $booking->tanggal_booking?->format('d/m/Y') }}
+                                            {{ $booking->tanggal_booking?->format('d/m/Y') ?? '-' }}
                                         </td>
 
                                         <td>
-                                            {{ $booking->jam_booking }}
+                                            {{ $booking->jam_booking ?? '-' }}
                                         </td>
 
                                         <td>
@@ -225,13 +232,18 @@
 
                     <div class="text-center py-5">
 
-                        <i
-                            class="bi bi-calendar-x text-muted"
-                            style="font-size: 40px;"
-                        ></i>
+                        <div class="bg-orange-soft rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
+                             style="width: 75px; height: 75px;">
+                            <i class="bi bi-calendar-x text-orange"
+                               style="font-size: 32px;"></i>
+                        </div>
 
-                        <p class="text-muted mt-3 mb-0">
-                            Belum ada booking untuk layanan ini.
+                        <h6 class="fw-bold mb-1">
+                            Belum Ada Booking
+                        </h6>
+
+                        <p class="text-muted mb-0">
+                            Belum ada booking yang menggunakan layanan ini.
                         </p>
 
                     </div>

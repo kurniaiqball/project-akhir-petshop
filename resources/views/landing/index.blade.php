@@ -170,25 +170,25 @@
     <div class="row g-3 justify-content-center text-start">
 
         <!-- CARD 1: PET SHOP -->
-        <div class="col-6">
-            <div class="bg-white rounded-4 p-3 shadow-sm h-100">
+        <div class="col-8">
+            <div class="bg-orange text-white rounded-4 p-3 shadow-sm h-100">
                 <span class="feature-icon mb-3">
                     <i class="bi bi-bag-heart"></i>
                 </span>
                 <h2 class="h6 fw-bold mb-1">Pet Shop</h2>
-                <p class="small text-secondary mb-0">
+                <p class="small text-white mb-0">
                     Kebutuhan harian hewan kesayangan.
                 </p>
             </div>
         </div>
 
         <!-- CARD 2: GROOMING -->
-        <div class="col-6">
+        <div class="col-8">
             <div class="bg-orange text-white rounded-4 p-3 h-100 shadow-sm">
                 <span class="d-inline-flex align-items-center justify-content-center rounded-3 bg-white text-orange p-3 mb-3">
                     <i class="bi bi-scissors fs-4"></i>
                 </span>
-                <h2 class="h6 fw-bold mb-1">Grooming</h2>
+                <h2 class="h6 fw-bold mb-3">Grooming</h2>
                 <p class="small text-white-50 mb-0">
                     Perawatan agar tetap bersih dan nyaman.
                 </p>
@@ -308,7 +308,25 @@
                 <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3 g-md-4 align-items-stretch">
                     @forelse($services as $service)
                         <div class="col">
-                            <article class="card soft-card h-100 shadow-sm">
+                            <article class="card soft-card h-100 shadow-sm overflow-hidden">
+
+                                {{-- FOTO GROOMING --}}
+                                <div class="ratio ratio-16x9 bg-white">
+                                    @if(!empty($service->foto))
+                                        <img
+                                            src="{{ asset('storage/' . $service->foto) }}"
+                                            alt="Foto {{ $service->nama_service }}"
+                                            class="w-100 h-100"
+                                            style="object-fit: cover;"
+                                            loading="lazy"
+                                        >
+                                    @else
+                                        <div class="d-flex align-items-center justify-content-center bg-orange-soft text-orange">
+                                            <i class="bi bi-scissors display-3"></i>
+                                        </div>
+                                    @endif
+                                </div>
+
                                 <div class="card-body p-4 d-flex flex-column h-100">
                                     <div class="d-flex justify-content-between align-items-start gap-3 mb-4">
                                         <span class="feature-icon"><i class="bi bi-scissors"></i></span>
@@ -316,13 +334,18 @@
                                             <i class="bi bi-clock me-1"></i>{{ $service->durasi }} menit
                                         </span>
                                     </div>
+
                                     <h3 class="h5 fw-bold mb-3">{{ $service->nama_service }}</h3>
+
                                     <p class="text-secondary mb-4 flex-grow-1">
                                         {{ $service->deskripsi ?: 'Layanan perawatan hewan untuk menjaga kebersihan dan kenyamanan hewan kesayangan.' }}
                                     </p>
+
                                     <div class="d-flex justify-content-between align-items-center gap-2 border-top pt-3 mt-auto">
                                         <span class="small text-secondary">Mulai dari</span>
-                                        <span class="fw-bold text-orange text-nowrap">Rp {{ number_format($service->harga, 0, ',', '.') }}</span>
+                                        <span class="fw-bold text-orange text-nowrap">
+                                            Rp {{ number_format($service->harga, 0, ',', '.') }}
+                                        </span>
                                     </div>
                                 </div>
                             </article>
@@ -447,7 +470,7 @@
             </div>
             <hr class="border-secondary my-4">
             <div class="d-flex flex-column flex-sm-row justify-content-between gap-2 small">
-                <span>© {{ date('Y') }} Galaxy Petshop. All rights reserved.</span>
+                <span>© {{ date('Y') }} Kelompok 8 XII PPLG 2.</span>
                 <span>Pet Shop &amp; Grooming</span>
             </div>
         </div>

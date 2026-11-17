@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\OrderCompletedMail;
 use App\Mail\OrderCreatedMail;
 use App\Mail\OrderReadyForPickupMail;
 use App\Models\Product;
@@ -330,7 +331,7 @@ class TransactionController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | Kirim email ke customer
+        | Kirim email konfirmasi pesanan
         |--------------------------------------------------------------------------
         */
 
@@ -483,68 +484,116 @@ class TransactionController extends Controller
         );
     }
 
-    
-   
-/**
- * Admin mengubah status transaksi.
- */
-
-public function adminUpdateStatus(
-    Request $request,
-    Transaction $transaction
-) {
-    $validated = $request->validate([
-        'status' => [
-            'required',
-            'in:Pending,Diproses,Siap Diambil,Selesai,Dibatalkan',
-        ],
-    ]);
-
-    $statusLama = $transaction->status;
-    $statusBaru = $validated['status'];
-
-    // Simpan status baru.
-    $transaction->update([
-        'status' => $statusBaru,
-    ]);
-
-    // Kirim email hanya ketika status pertama kali
-    // berubah menjadi Siap Diambil.
-    if (
-        $statusLama !== 'Siap Diambil' &&
-        $statusBaru === 'Siap Diambil'
+    /**
+     * Admin mengubah status transaksi.
+     */
+    public function adminUpdateStatus(
+        Request $request,
+        Transaction $transaction
     ) {
-        $transaction->load('customer');
+        $validated = $request->validate([
+            'status' => [
+                'required',
+                'in:Pending,Diproses,Siap Diambil,Selesai,Dibatalkan',
+            ],
+        ]);
 
-        $email = $transaction->customer->email ?? null;
+        $statusLama = $transaction->status;
+        $statusBaru = $validated['status'];
 
-        if ($email) {
-            try {
-                Mail::to($email)->send(
-                    new OrderReadyForPickupMail($transaction)
-                );
-            } catch (\Throwable $e) {
-                report($e);
+        /*
+        |--------------------------------------------------------------------------
+        | Simpan status baru
+        |--------------------------------------------------------------------------
+        */
 
-                return redirect()
-                    ->route('admin.transactions.index')
-                    ->with(
-                        'error',
-                        'Status berhasil diubah, tetapi email gagal dikirim.'
+        $transaction->update([
+            'status' => $statusBaru,
+        ]);
+
+        /*
+        |--------------------------------------------------------------------------
+        | Kirim email ketika status menjadi Siap Diambil
+        |--------------------------------------------------------------------------
+        */
+
+        if (
+            $statusLama !== 'Siap Diambil' &&
+            $statusBaru === 'Siap Diambil'
+        ) {
+            $transaction->load([
+                'customer',
+                'details.product',
+            ]);
+
+            $email = $transaction->customer->email ?? null;
+
+            if ($email) {
+                try {
+                    Mail::to($email)->send(
+                        new OrderReadyForPickupMail($transaction)
                     );
+                } catch (\Throwable $e) {
+                    report($e);
+
+                    return redirect()
+                        ->route('admin.transactions.index')
+                        ->with(
+                            'error',
+                            'Status berhasil diubah, tetapi email gagal dikirim.'
+                        );
+                }
             }
         }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Kirim email ketika status menjadi Selesai
+        |--------------------------------------------------------------------------
+        */
+
+        if (
+            $statusLama !== 'Selesai' &&
+            $statusBaru === 'Selesai'
+        ) {
+            $transaction->load([
+                'customer',
+                'details.product',
+            ]);
+
+            $email = $transaction->customer->email ?? null;
+
+            if ($email) {
+                try {
+                    Mail::to($email)->send(
+                        new OrderCompletedMail($transaction)
+                    );
+                } catch (\Throwable $e) {
+                    report($e);
+
+                    return redirect()
+                        ->route('admin.transactions.index')
+                        ->with(
+                            'error',
+                            'Status berhasil diubah, tetapi email gagal dikirim.'
+                        );
+                }
+            }
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Redirect
+        |--------------------------------------------------------------------------
+        */
+
+        return redirect()
+            ->route('admin.transactions.index')
+            ->with(
+                'success',
+                'Status transaksi berhasil diperbarui.'
+            );
     }
-
-    return redirect()
-        ->route('admin.transactions.index')
-        ->with(
-            'success',
-            'Status transaksi berhasil diperbarui.'
-        );
-}
-
-    
 
     /**
      * Admin menghapus transaksi dan mengembalikan stok.

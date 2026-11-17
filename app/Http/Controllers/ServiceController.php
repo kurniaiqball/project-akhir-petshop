@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Service;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ServiceController extends Controller
 {
@@ -58,7 +59,18 @@ class ServiceController extends Controller
                 'nullable',
                 'string',
             ],
+            'foto' => [
+                'nullable',
+                'image',
+                'mimes:jpg,jpeg,png,webp',
+                'max:2048',
+            ],
         ]);
+
+        if ($request->hasFile('foto')) {
+            $validated['foto'] = $request->file('foto')
+                ->store('services', 'public');
+        }
 
         Service::create($validated);
 
@@ -112,9 +124,33 @@ class ServiceController extends Controller
                 'nullable',
                 'string',
             ],
+            'foto' => [
+                'nullable',
+                'image',
+                'mimes:jpg,jpeg,png,webp',
+                'max:2048',
+            ],
         ]);
 
+        $fotoLama = $service->foto;
+
+        if ($request->hasFile('foto')) {
+            $validated['foto'] = $request->file('foto')
+                ->store('services', 'public');
+        } else {
+            unset($validated['foto']);
+        }
+
         $service->update($validated);
+
+        // Hapus foto lama setelah foto baru berhasil disimpan
+        if (
+            $request->hasFile('foto') &&
+            $fotoLama &&
+            Storage::disk('public')->exists($fotoLama)
+        ) {
+            Storage::disk('public')->delete($fotoLama);
+        }
 
         return redirect()
             ->route('admin.services.index')
@@ -126,6 +162,8 @@ class ServiceController extends Controller
 
     public function destroy(Service $service)
     {
+        $foto = $service->foto;
+
         try {
             $service->delete();
         } catch (\Illuminate\Database\QueryException $e) {
@@ -135,6 +173,14 @@ class ServiceController extends Controller
                     'error',
                     'Layanan tidak dapat dihapus karena masih digunakan dalam booking.'
                 );
+        }
+
+        // Hapus foto setelah data layanan berhasil dihapus
+        if (
+            $foto &&
+            Storage::disk('public')->exists($foto)
+        ) {
+            Storage::disk('public')->delete($foto);
         }
 
         return redirect()

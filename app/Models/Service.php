@@ -13,6 +13,7 @@ class Service extends Model
         'harga',
         'durasi',
         'deskripsi',
+        'foto',
     ];
 
     protected $casts = [

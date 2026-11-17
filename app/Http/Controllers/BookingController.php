@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\BookingCompletedMail;
 use App\Mail\BookingCreatedMail;
 use App\Mail\BookingConfirmedMail;
 use App\Models\Booking;
-use App\Models\Customer;
 use App\Models\Pet;
 use App\Models\Service;
 use Illuminate\Http\Request;
@@ -99,7 +99,7 @@ class BookingController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | Cegah double booking pada tanggal dan jam yang sama
+        | Cegah double booking
         |--------------------------------------------------------------------------
         */
 
@@ -274,7 +274,7 @@ class BookingController extends Controller
 
     /*
     |--------------------------------------------------------------------------
-    | ADMIN UPDATE STATUS + EMAIL KONFIRMASI
+    | ADMIN UPDATE STATUS + EMAIL
     |--------------------------------------------------------------------------
     */
 
@@ -292,14 +292,43 @@ class BookingController extends Controller
         $statusLama = $booking->status;
         $statusBaru = $validated['status'];
 
-        // Update status booking
+        // Simpan perubahan status
         $booking->update([
             'status' => $statusBaru,
         ]);
 
+        // Jika status tidak berubah, tidak perlu mengirim email
+        if ($statusLama === $statusBaru) {
+            return redirect()
+                ->route('admin.bookings.index')
+                ->with(
+                    'success',
+                    'Status booking tidak mengalami perubahan.'
+                );
+        }
+
+        // Ambil data relasi booking
+        $booking->load([
+            'customer',
+            'pet',
+            'service',
+        ]);
+
+        $email = $booking->customer->email ?? null;
+
+        // Pastikan customer memiliki email
+        if (!$email) {
+            return redirect()
+                ->route('admin.bookings.index')
+                ->with(
+                    'success',
+                    'Status berhasil diperbarui, tetapi customer belum memiliki alamat email.'
+                );
+        }
+
         /*
         |--------------------------------------------------------------------------
-        | Kirim Email Jika Status Berubah Menjadi Dikonfirmasi
+        | EMAIL BOOKING DIKONFIRMASI
         |--------------------------------------------------------------------------
         */
 
@@ -307,28 +336,45 @@ class BookingController extends Controller
             $statusLama !== 'Dikonfirmasi' &&
             $statusBaru === 'Dikonfirmasi'
         ) {
-            $booking->load([
-                'customer',
-                'pet',
-                'service',
-            ]);
+            try {
+                Mail::to($email)
+                    ->send(new BookingConfirmedMail($booking));
 
-            $email = $booking->customer->email ?? null;
+            } catch (\Throwable $e) {
+                report($e);
 
-            if ($email) {
-                try {
-                    Mail::to($email)
-                        ->send(new BookingConfirmedMail($booking));
-                } catch (\Throwable $e) {
-                    report($e);
+                return redirect()
+                    ->route('admin.bookings.index')
+                    ->with(
+                        'error',
+                        'Status berhasil diperbarui, tetapi email konfirmasi gagal dikirim.'
+                    );
+            }
+        }
 
-                    return redirect()
-                        ->route('admin.bookings.index')
-                        ->with(
-                            'error',
-                            'Status berhasil diperbarui, tetapi email konfirmasi gagal dikirim.'
-                        );
-                }
+        /*
+        |--------------------------------------------------------------------------
+        | EMAIL BOOKING SELESAI
+        |--------------------------------------------------------------------------
+        */
+
+        if (
+            $statusLama !== 'Selesai' &&
+            $statusBaru === 'Selesai'
+        ) {
+            try {
+                Mail::to($email)
+                    ->send(new BookingCompletedMail($booking));
+
+            } catch (\Throwable $e) {
+                report($e);
+
+                return redirect()
+                    ->route('admin.bookings.index')
+                    ->with(
+                        'error',
+                        'Status berhasil menjadi Selesai, tetapi email pemberitahuan gagal dikirim.'
+                    );
             }
         }
 
@@ -336,7 +382,7 @@ class BookingController extends Controller
             ->route('admin.bookings.index')
             ->with(
                 'success',
-                'Status booking berhasil diperbarui.'
+                'Status booking berhasil diperbarui dan notifikasi email telah diproses.'
             );
     }
 }
