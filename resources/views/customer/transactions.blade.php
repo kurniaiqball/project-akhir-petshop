@@ -142,7 +142,7 @@
 @endforelse
 
 <div class="mt-4">
-    {{ $transactions->links() }}
+    {{ $transactions->links('pagination::bootstrap-5') }}
 </div>
 
 @endsection

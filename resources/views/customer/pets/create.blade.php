@@ -5,30 +5,7 @@
 
 @section('content')
 
-<style>
-    .pet-photo-preview {
-        width: 150px;
-        height: 150px;
-        border-radius: 16px;
-        object-fit: cover;
-        border: 2px dashed #dee2e6;
-        background: #f8f9fa;
-    }
-
-    .pet-photo-placeholder {
-        width: 150px;
-        height: 150px;
-        border-radius: 16px;
-        background: #f1f5f9;
-        color: #64748b;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 48px;
-        border: 2px dashed #dee2e6;
-    }
-</style>
-
+{{-- HEADER --}}
 <div class="mb-4">
     <h2 class="fw-bold mb-1">
         Tambah Hewan
@@ -39,10 +16,12 @@
     </p>
 </div>
 
-<div class="card border-0 shadow-sm">
-    <div class="card-body p-4">
+{{-- CARD FORM --}}
+<div class="card border-0 shadow-sm rounded-4">
 
-        {{-- Pesan kesalahan --}}
+    <div class="card-body p-3 p-md-4 p-lg-5">
+
+        {{-- VALIDATION ERROR --}}
         @if ($errors->any())
             <div class="alert alert-danger">
                 <strong>Terdapat kesalahan:</strong>
@@ -62,26 +41,39 @@
         >
             @csrf
 
-            {{-- Foto Hewan --}}
+            {{-- FOTO HEWAN --}}
             <div class="mb-4">
+
                 <label class="form-label fw-semibold">
+                    <i class="bi bi-camera me-1" style="color: #f58220;"></i>
                     Foto Hewan
                 </label>
 
                 <div class="d-flex flex-column flex-sm-row align-items-sm-center gap-3">
 
-                    <div id="photoPlaceholder" class="pet-photo-placeholder">
-                        <i class="bi bi-camera"></i>
+                    {{-- PLACEHOLDER --}}
+                    <div
+                        id="photoPlaceholder"
+                        class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0"
+                        style="width: 150px; height: 150px; background-color: #fff2e6; border: 2px dashed #f58220;"
+                    >
+                        <i
+                            class="bi bi-camera"
+                            style="font-size: 48px; color: #f58220;"
+                        ></i>
                     </div>
 
+                    {{-- PREVIEW --}}
                     <img
                         id="photoPreview"
-                        class="pet-photo-preview d-none"
+                        class="rounded-3 d-none flex-shrink-0"
                         src=""
                         alt="Preview foto hewan"
+                        style="width: 150px; height: 150px; object-fit: cover;"
                     >
 
-                    <div>
+                    <div class="flex-grow-1 w-100">
+
                         <input
                             type="file"
                             name="foto"
@@ -108,6 +100,7 @@
                             <i class="bi bi-trash me-1"></i>
                             Batal Pilih Foto
                         </button>
+
                     </div>
 
                 </div>
@@ -115,8 +108,9 @@
 
             <hr class="mb-4">
 
-            {{-- Nama --}}
+            {{-- NAMA HEWAN --}}
             <div class="mb-3">
+
                 <label class="form-label fw-semibold">
                     Nama Hewan
                 </label>
@@ -135,12 +129,14 @@
                         {{ $message }}
                     </div>
                 @enderror
+
             </div>
 
             <div class="row">
 
-                {{-- Jenis --}}
-                <div class="col-md-6 mb-3">
+                {{-- JENIS HEWAN --}}
+                <div class="col-12 col-md-6 mb-3">
+
                     <label class="form-label fw-semibold">
                         Jenis Hewan
                     </label>
@@ -159,10 +155,12 @@
                             {{ $message }}
                         </div>
                     @enderror
+
                 </div>
 
-                {{-- Ras --}}
-                <div class="col-md-6 mb-3">
+                {{-- RAS --}}
+                <div class="col-12 col-md-6 mb-3">
+
                     <label class="form-label fw-semibold">
                         Ras
                     </label>
@@ -180,10 +178,12 @@
                             {{ $message }}
                         </div>
                     @enderror
+
                 </div>
 
-                {{-- Jenis Kelamin --}}
-                <div class="col-md-6 mb-3">
+                {{-- JENIS KELAMIN --}}
+                <div class="col-12 col-md-6 mb-3">
+
                     <label class="form-label fw-semibold">
                         Jenis Kelamin
                     </label>
@@ -217,20 +217,24 @@
                             {{ $message }}
                         </div>
                     @enderror
+
                 </div>
 
             </div>
 
-            {{-- Umur --}}
+            {{-- UMUR --}}
             <div class="mb-3">
+
                 <label class="form-label fw-semibold">
                     Umur
                 </label>
 
                 <div class="row g-2">
 
-                    <div class="col-md-6">
+                    <div class="col-12 col-md-6">
+
                         <div class="input-group">
+
                             <input
                                 type="number"
                                 name="umur_tahun"
@@ -250,11 +254,15 @@
                                     {{ $message }}
                                 </div>
                             @enderror
+
                         </div>
+
                     </div>
 
-                    <div class="col-md-6">
+                    <div class="col-12 col-md-6">
+
                         <div class="input-group">
+
                             <input
                                 type="number"
                                 name="umur_bulan"
@@ -274,7 +282,9 @@
                                     {{ $message }}
                                 </div>
                             @enderror
+
                         </div>
+
                     </div>
 
                 </div>
@@ -282,10 +292,12 @@
                 <small class="text-muted">
                     Isi bulan dengan angka 0–11.
                 </small>
+
             </div>
 
-            {{-- Catatan --}}
+            {{-- CATATAN --}}
             <div class="mb-4">
+
                 <label class="form-label fw-semibold">
                     Catatan
                 </label>
@@ -302,13 +314,17 @@
                         {{ $message }}
                     </div>
                 @enderror
+
             </div>
 
-            {{-- Tombol --}}
-            <div class="d-flex gap-2">
+            <hr class="mb-4">
+
+            {{-- TOMBOL --}}
+            <div class="d-flex flex-column flex-sm-row justify-content-between gap-2">
+
                 <a
                     href="{{ route('customer.pets.index') }}"
-                    class="btn btn-light"
+                    class="btn btn-light px-4"
                 >
                     <i class="bi bi-arrow-left me-1"></i>
                     Kembali
@@ -316,26 +332,32 @@
 
                 <button
                     type="submit"
-                    class="btn btn-primary"
+                    class="btn text-white px-4"
+                    style="background-color: #f58220; border-color: #f58220;"
                 >
                     <i class="bi bi-check-lg me-1"></i>
                     Simpan Hewan
                 </button>
+
             </div>
 
         </form>
+
     </div>
+
 </div>
 
-{{-- Preview Foto --}}
+{{-- PREVIEW FOTO --}}
 <script>
     document.addEventListener('DOMContentLoaded', function () {
+
         const fotoInput = document.getElementById('foto');
         const photoPreview = document.getElementById('photoPreview');
         const photoPlaceholder = document.getElementById('photoPlaceholder');
         const removePhotoButton = document.getElementById('removePhoto');
 
         fotoInput.addEventListener('change', function () {
+
             const file = this.files[0];
 
             if (!file) {
@@ -373,6 +395,7 @@
             };
 
             reader.readAsDataURL(file);
+
         });
 
         removePhotoButton.addEventListener('click', function () {
@@ -386,6 +409,7 @@
             photoPlaceholder.classList.remove('d-none');
             removePhotoButton.classList.add('d-none');
         }
+
     });
 </script>
 

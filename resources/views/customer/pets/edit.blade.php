@@ -1,49 +1,33 @@
+
 @extends('layouts.customer')
 
 @section('title', 'Edit Hewan - PetCare')
 
 @section('content')
 
-<style>
-    .pet-photo-preview {
-        width: 150px;
-        height: 150px;
-        border-radius: 16px;
-        object-fit: cover;
-        border: 2px dashed #dee2e6;
-        background: #f8f9fa;
-    }
-
-    .pet-photo-placeholder {
-        width: 150px;
-        height: 150px;
-        border-radius: 16px;
-        background: #f1f5f9;
-        color: #64748b;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 48px;
-        border: 2px dashed #dee2e6;
-    }
-</style>
-
+{{-- HEADER --}}
 <div class="mb-4">
-    <h2 class="fw-bold mb-1">Edit Hewan</h2>
+    <h2 class="fw-bold mb-1">
+        Edit Hewan
+    </h2>
+
     <p class="text-muted mb-0">
         Perbarui data hewan peliharaanmu.
     </p>
 </div>
 
-<div class="card border-0 shadow-sm">
-    <div class="card-body p-4">
+{{-- CARD FORM --}}
+<div class="card border-0 shadow-sm rounded-4">
 
-        {{-- Pesan Kesalahan --}}
-        @if($errors->any())
+    <div class="card-body p-3 p-md-4 p-lg-5">
+
+        {{-- VALIDATION ERROR --}}
+        @if ($errors->any())
             <div class="alert alert-danger">
                 <strong>Terdapat kesalahan:</strong>
+
                 <ul class="mb-0 mt-2">
-                    @foreach($errors->all() as $error)
+                    @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>
                     @endforeach
                 </ul>
@@ -58,40 +42,58 @@
             @csrf
             @method('PUT')
 
-            {{-- Foto Hewan --}}
+            {{-- FOTO HEWAN --}}
             <div class="mb-4">
+
                 <label class="form-label fw-semibold">
+                    <i class="bi bi-camera me-1" style="color: #f58220;"></i>
                     Foto Hewan
                 </label>
 
                 <div class="d-flex flex-column flex-sm-row align-items-sm-center gap-3">
 
-                    {{-- Foto Lama / Placeholder --}}
-                    @if($pet->foto)
+                    {{-- FOTO LAMA / PLACEHOLDER --}}
+                    @if ($pet->foto)
+
                         <img
                             id="photoPreview"
-                            class="pet-photo-preview"
+                            class="rounded-3 flex-shrink-0"
                             src="{{ asset('storage/' . $pet->foto) }}"
                             alt="Foto {{ $pet->nama_pet }}"
+                            style="width: 150px; height: 150px; object-fit: cover;"
                         >
 
-                        <div id="photoPlaceholder" class="pet-photo-placeholder d-none">
-                            <i class="bi bi-camera"></i>
+                        <div
+                            id="photoPlaceholder"
+                            class="rounded-3 d-none align-items-center justify-content-center flex-shrink-0"
+                            style="width: 150px; height: 150px; background-color: #fff2e6; border: 2px dashed #f58220;"
+                        >
+                            <i class="bi bi-camera" style="font-size: 48px; color: #f58220;"></i>
                         </div>
+
                     @else
-                        <div id="photoPlaceholder" class="pet-photo-placeholder">
-                            <i class="bi bi-camera"></i>
+
+                        <div
+                            id="photoPlaceholder"
+                            class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0"
+                            style="width: 150px; height: 150px; background-color: #fff2e6; border: 2px dashed #f58220;"
+                        >
+                            <i class="bi bi-camera" style="font-size: 48px; color: #f58220;"></i>
                         </div>
 
                         <img
                             id="photoPreview"
-                            class="pet-photo-preview d-none"
+                            class="rounded-3 d-none flex-shrink-0"
                             src=""
                             alt="Preview foto hewan"
+                            style="width: 150px; height: 150px; object-fit: cover;"
                         >
+
                     @endif
 
-                    <div>
+                    {{-- INPUT FOTO --}}
+                    <div class="flex-grow-1 w-100">
+
                         <input
                             type="file"
                             name="foto"
@@ -118,15 +120,18 @@
                             <i class="bi bi-arrow-counterclockwise me-1"></i>
                             Batal Pilih Foto
                         </button>
+
                     </div>
 
                 </div>
+
             </div>
 
             <hr class="mb-4">
 
-            {{-- Nama Hewan --}}
+            {{-- NAMA HEWAN --}}
             <div class="mb-3">
+
                 <label class="form-label fw-semibold">
                     Nama Hewan
                 </label>
@@ -134,16 +139,25 @@
                 <input
                     type="text"
                     name="nama_pet"
-                    class="form-control"
+                    class="form-control @error('nama_pet') is-invalid @enderror"
                     value="{{ old('nama_pet', $pet->nama_pet) }}"
+                    placeholder="Contoh: Milo"
                     required
                 >
+
+                @error('nama_pet')
+                    <div class="invalid-feedback">
+                        {{ $message }}
+                    </div>
+                @enderror
+
             </div>
 
             <div class="row">
 
-                {{-- Jenis --}}
-                <div class="col-md-6 mb-3">
+                {{-- JENIS HEWAN --}}
+                <div class="col-12 col-md-6 mb-3">
+
                     <label class="form-label fw-semibold">
                         Jenis Hewan
                     </label>
@@ -151,14 +165,23 @@
                     <input
                         type="text"
                         name="jenis"
-                        class="form-control"
+                        class="form-control @error('jenis') is-invalid @enderror"
                         value="{{ old('jenis', $pet->jenis) }}"
+                        placeholder="Contoh: Kucing"
                         required
                     >
+
+                    @error('jenis')
+                        <div class="invalid-feedback">
+                            {{ $message }}
+                        </div>
+                    @enderror
+
                 </div>
 
-                {{-- Ras --}}
-                <div class="col-md-6 mb-3">
+                {{-- RAS --}}
+                <div class="col-12 col-md-6 mb-3">
+
                     <label class="form-label fw-semibold">
                         Ras
                     </label>
@@ -166,23 +189,34 @@
                     <input
                         type="text"
                         name="ras"
-                        class="form-control"
+                        class="form-control @error('ras') is-invalid @enderror"
                         value="{{ old('ras', $pet->ras) }}"
+                        placeholder="Contoh: Persia"
                     >
+
+                    @error('ras')
+                        <div class="invalid-feedback">
+                            {{ $message }}
+                        </div>
+                    @enderror
+
                 </div>
 
-                {{-- Jenis Kelamin --}}
-                <div class="col-md-6 mb-3">
+                {{-- JENIS KELAMIN --}}
+                <div class="col-12 col-md-6 mb-3">
+
                     <label class="form-label fw-semibold">
                         Jenis Kelamin
                     </label>
 
                     <select
                         name="jenis_kelamin"
-                        class="form-select"
+                        class="form-select @error('jenis_kelamin') is-invalid @enderror"
                         required
                     >
-                        <option value="">-- Pilih Jenis Kelamin --</option>
+                        <option value="">
+                            -- Pilih Jenis Kelamin --
+                        </option>
 
                         <option
                             value="Jantan"
@@ -198,48 +232,80 @@
                             Betina
                         </option>
                     </select>
+
+                    @error('jenis_kelamin')
+                        <div class="invalid-feedback">
+                            {{ $message }}
+                        </div>
+                    @enderror
+
                 </div>
 
             </div>
 
-            {{-- Umur --}}
+            {{-- UMUR --}}
             <div class="mb-3">
+
                 <label class="form-label fw-semibold">
                     Umur
                 </label>
 
                 <div class="row g-2">
 
-                    <div class="col-md-6">
+                    <div class="col-12 col-md-6">
+
                         <div class="input-group">
+
                             <input
                                 type="number"
                                 name="umur_tahun"
-                                class="form-control"
+                                class="form-control @error('umur_tahun') is-invalid @enderror"
                                 value="{{ old('umur_tahun', $pet->umur_tahun) }}"
                                 min="0"
                                 max="100"
                                 placeholder="0"
                             >
 
-                            <span class="input-group-text">Tahun</span>
+                            <span class="input-group-text">
+                                Tahun
+                            </span>
+
+                            @error('umur_tahun')
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                            @enderror
+
                         </div>
+
                     </div>
 
-                    <div class="col-md-6">
+                    <div class="col-12 col-md-6">
+
                         <div class="input-group">
+
                             <input
                                 type="number"
                                 name="umur_bulan"
-                                class="form-control"
+                                class="form-control @error('umur_bulan') is-invalid @enderror"
                                 value="{{ old('umur_bulan', $pet->umur_bulan) }}"
                                 min="0"
                                 max="11"
                                 placeholder="0"
                             >
 
-                            <span class="input-group-text">Bulan</span>
+                            <span class="input-group-text">
+                                Bulan
+                            </span>
+
+                            @error('umur_bulan')
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                            @enderror
+
                         </div>
+
                     </div>
 
                 </div>
@@ -247,27 +313,39 @@
                 <small class="text-muted">
                     Isi bulan dengan angka 0–11.
                 </small>
+
             </div>
 
-            {{-- Catatan --}}
+            {{-- CATATAN --}}
             <div class="mb-4">
+
                 <label class="form-label fw-semibold">
                     Catatan
                 </label>
 
                 <textarea
                     name="catatan"
-                    class="form-control"
+                    class="form-control @error('catatan') is-invalid @enderror"
                     rows="4"
-                    placeholder="Catatan tambahan"
+                    placeholder="Catatan tambahan tentang hewan..."
                 >{{ old('catatan', $pet->catatan) }}</textarea>
+
+                @error('catatan')
+                    <div class="invalid-feedback">
+                        {{ $message }}
+                    </div>
+                @enderror
+
             </div>
 
-            {{-- Tombol --}}
-            <div class="d-flex gap-2">
+            <hr class="mb-4">
+
+            {{-- TOMBOL --}}
+            <div class="d-flex flex-column flex-sm-row justify-content-between gap-2">
+
                 <a
                     href="{{ route('customer.pets.index') }}"
-                    class="btn btn-light"
+                    class="btn btn-light px-4"
                 >
                     <i class="bi bi-arrow-left me-1"></i>
                     Kembali
@@ -275,18 +353,22 @@
 
                 <button
                     type="submit"
-                    class="btn btn-primary"
+                    class="btn text-white px-4"
+                    style="background-color: #f58220; border-color: #f58220;"
                 >
                     <i class="bi bi-check-lg me-1"></i>
                     Simpan Perubahan
                 </button>
+
             </div>
 
         </form>
+
     </div>
+
 </div>
 
-{{-- Preview Foto --}}
+{{-- PREVIEW FOTO --}}
 <script>
 document.addEventListener('DOMContentLoaded', function () {
 
@@ -337,6 +419,7 @@ document.addEventListener('DOMContentLoaded', function () {
         };
 
         reader.readAsDataURL(file);
+
     });
 
     // Batalkan foto baru
