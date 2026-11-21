@@ -44,16 +44,55 @@
             --bs-btn-hover-border-color: var(--galaxy-orange);
         }
         .navbar-brand img { width: 76px; height: 58px; object-fit: contain; }
+        /* Beranda memakai gradasi oranye ke putih agar lebih ringan. */
         .hero {
-            background:
-                radial-gradient(circle at 85% 18%, rgba(245,130,32,.15), transparent 27%),
-                linear-gradient(135deg, #fffaf5 0%, #fff 58%, #fff1e3 100%);
+            background: linear-gradient(
+                115deg,
+                #f58220 0%,
+                #f58220 34%,
+                #ffb36d 62%,
+                #fff7ef 100%
+            );
+            color: #fff;
         }
-        .hero-logo {
-            width: min(100%, 420px);
-            max-height: 340px;
-            object-fit: contain;
-            filter: drop-shadow(0 16px 24px rgba(80, 48, 20, .10));
+        .hero .text-orange { color: #fff !important; }
+        .hero .badge.text-orange { color: var(--galaxy-orange-dark) !important; }
+        .hero .text-secondary,
+        .hero .text-white-50 { color: rgba(255,255,255,.9) !important; }
+        .hero .eyebrow { color: #fff; }
+        .hero-storefront {
+            display: block;
+            width: 100%;
+            height: clamp(340px, 48vw, 600px);
+            object-fit: cover;
+            object-position: center 52%;
+            padding: 0;
+            background: #fff;
+            border: 5px solid rgba(255,255,255,.95);
+            border-radius: 1.25rem;
+            box-shadow: 0 1.25rem 2.5rem rgba(75, 39, 10, .18);
+        }
+
+        @media (max-width: 991.98px) {
+            .hero-storefront {
+                height: clamp(320px, 85vw, 520px);
+                object-position: center 52%;
+            }
+        }
+        .btn-hero-light {
+            --bs-btn-color: var(--galaxy-orange-dark);
+            --bs-btn-bg: #fff;
+            --bs-btn-border-color: #fff;
+            --bs-btn-hover-color: var(--galaxy-orange-dark);
+            --bs-btn-hover-bg: #fff2e6;
+            --bs-btn-hover-border-color: #fff2e6;
+        }
+        .btn-hero-outline {
+            --bs-btn-color: #fff;
+            --bs-btn-border-color: #fff;
+            --bs-btn-hover-color: var(--galaxy-orange-dark);
+            --bs-btn-hover-bg: #fff;
+            --bs-btn-hover-border-color: #fff;
         }
         .eyebrow {
             color: var(--galaxy-orange-dark);
@@ -145,17 +184,17 @@
                             <i class="bi bi-stars me-1"></i> Sahabat terbaik hewan kesayangan
                         </span>
                         <h1 class="display-3 fw-bold lh-sm mb-4">
-                            Semua kebutuhan si manis, <span class="text-orange">ada di Galaxy.</span>
+                            Semua kebutuhan hewan anda, <span class="text-orange">ada di Galaxy</span>
                         </h1>
                         <p class="fs-5 text-secondary mb-4">
                             Temukan kebutuhan hewan kesayangan mulai dari makanan, perlengkapan,
                             hingga layanan grooming dalam satu tempat.
                         </p>
                         <div class="d-flex flex-column flex-sm-row gap-3">
-                            <a href="#produk" class="btn btn-orange btn-lg px-4">
+                            <a href="#produk" class="btn btn-hero-light btn-lg px-4 fw-semibold">
                                 Jelajahi Produk <i class="bi bi-arrow-right ms-2"></i>
                             </a>
-                            <a href="#layanan" class="btn btn-outline-orange btn-lg px-4">Lihat Layanan</a>
+                            <a href="#layanan" class="btn btn-hero-outline btn-lg px-4 fw-semibold">Lihat Layanan</a>
                         </div>
                         <div class="d-flex flex-wrap gap-3 gap-md-4 mt-5 text-secondary small">
                             <span><i class="bi bi-check-circle-fill text-orange me-1"></i> Produk pilihan</span>
@@ -165,42 +204,14 @@
                     </div>
 
                    
-<div class="col-lg-6 text-center">
-
-    <div class="row g-3 justify-content-center text-start">
-
-        <!-- CARD 1: PET SHOP -->
-        <div class="col-8">
-            <div class="bg-orange text-white rounded-4 p-3 shadow-sm h-100">
-                <span class="feature-icon mb-3">
-                    <i class="bi bi-bag-heart"></i>
-                </span>
-                <h2 class="h6 fw-bold mb-1">Pet Shop</h2>
-                <p class="small text-white mb-0">
-                    Kebutuhan harian hewan kesayangan.
-                </p>
-            </div>
-        </div>
-
-        <!-- CARD 2: GROOMING -->
-        <div class="col-8">
-            <div class="bg-orange text-white rounded-4 p-3 h-100 shadow-sm">
-                <span class="d-inline-flex align-items-center justify-content-center rounded-3 bg-white text-orange p-3 mb-3">
-                    <i class="bi bi-scissors fs-4"></i>
-                </span>
-                <h2 class="h6 fw-bold mb-3">Grooming</h2>
-                <p class="small text-white-50 mb-0">
-                    Perawatan agar tetap bersih dan nyaman.
-                </p>
-            </div>
-        </div>
-
-    </div>
-</div>
-
-                            
-
-                  
+<div class="col-lg-6">
+                        <img
+                            src="{{ asset('images/galaxy-petshop.jpeg') }}"
+                            alt="Tampak depan Galaxy Petshop"
+                            class="hero-storefront"
+                            fetchpriority="high"
+                        >
+                    </div>
                 </div>
             </div>
         </section>
@@ -426,7 +437,7 @@
                     <div class="row align-items-center g-4">
                         <div class="col-lg-8">
                             <span class="badge bg-white text-orange rounded-pill px-3 py-2 mb-3">Yuk, mulai sekarang!</span>
-                            <h2 class="display-6 fw-bold mb-3">Berikan yang terbaik untuk sahabat kesayangan.</h2>
+                            <h2 class="display-6 fw-bold mb-3">Berikan yang terbaik untuk hewan kesayangan</h2>
                             <p class="text-white-50 mb-0">Jelajahi produk dan layanan Galaxy Petshop untuk menemani perawatan hewan kesayangan Anda.</p>
                         </div>
                         <div class="col-lg-4 text-lg-end">
@@ -469,10 +480,20 @@
                 </div>
             </div>
             <hr class="border-secondary my-4">
-            <div class="d-flex flex-column flex-sm-row justify-content-between gap-2 small">
-                <span>© {{ date('Y') }} Kelompok 8 XII PPLG 2.</span>
-                <span>Pet Shop &amp; Grooming</span>
-            </div>
+            
+<div class="d-flex flex-column flex-sm-row justify-content-between gap-2 small">
+    <span>© {{ date('Y') }} Kelompok 8 XII PPLG 2.</span>
+    <span>
+        Pet Shop &amp; Grooming |
+        <a href="https://share.google/JH8DKSJDKoLP7fC2n"
+           target="_blank"
+           rel="noopener noreferrer"
+           class="text-decoration-none text-danger">
+            <i class="bi bi-geo-alt-fill"></i> Lokasi Maps
+        </a>
+    </span>
+</div>
+
         </div>
     </footer>
 

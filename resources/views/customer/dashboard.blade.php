@@ -12,7 +12,7 @@
         </span>
 
         <h2 class="fw-bold mb-1">
-            Halo, {{ auth()->user()->name }}! 👋
+            Halo, {{ auth()->user()->name }}! 
         </h2>
 
         <p class="text-secondary mb-0">
